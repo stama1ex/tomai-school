@@ -30,11 +30,11 @@ export function NavigationMenuDemo() {
                 <NavigationMenuLink asChild>
                   <a
                     href="/"
-                    className="group relative flex h-full w-full flex-col justify-end rounded-md overflow-hidden select-none focus:shadow-md p-6"
+                    className="relative flex h-full w-full flex-col justify-end rounded-md overflow-hidden select-none focus:shadow-md p-6"
                   >
                     {/* фоновая картинка */}
                     <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                      className="absolute inset-0 bg-cover bg-center scale-120"
                       style={{ backgroundImage: "url('/background.jpg')" }}
                     ></div>
 
@@ -42,12 +42,9 @@ export function NavigationMenuDemo() {
                     <div className="absolute inset-0 bg-black/40"></div>
 
                     {/* контент поверх */}
-                    <div className="relative mt-4 mb-2 text-lg font-medium text-white">
+                    <div className="relative mt-4 mb-2 text-2xl font-medium text-white">
                       На главную страницу
                     </div>
-                    <p className="relative text-sm leading-tight text-gray-200">
-                      Главная приветствующая страница.
-                    </p>
                   </a>
                 </NavigationMenuLink>
               </li>
