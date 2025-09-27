@@ -28,7 +28,7 @@ export default function CallSchedule() {
         />
 
         <div className="overflow-x-auto">
-          <table className="max-w-[300px] md:min-w-full bg-background border border-primary/20 rounded-lg">
+          <table className="mx-auto md:min-w-full bg-background border border-primary/20 rounded-lg">
             <thead>
               <tr className="bg-primary/10">
                 <th className="px-6 py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20">

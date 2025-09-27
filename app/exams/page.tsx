@@ -31,29 +31,27 @@ export default function Exams() {
     <>
       <Banner
         image="/background.jpg"
-        title={'Экзамены - 2025'}
-        className="mb-8"
+        title="Экзамены - 2025"
+        className="mb-4 sm:mb-8"
       />
-      <Container className="px-4 py-8">
+      <Container className="px-4 py-6 sm:py-8">
         {/* Начальная школа */}
         <Title
-          text={
-            'График национальных экзаменов в начальном образовании на 2023-2024 уч.г.'
-          }
+          text="График национальных экзаменов в начальном образовании на 2023-2024 уч.г."
           size="md"
-          className="text-primary font-bold text-center mb-6"
+          className="text-primary font-bold text-center mb-4 sm:mb-6"
         />
-        <div className="overflow-x-auto flex flex-col gap-8">
+        <div className="overflow-x-auto">
           <table className="min-w-full bg-background border border-primary/20 rounded-lg">
             <thead>
               <tr className="bg-primary/10">
-                <th className="px-6 py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20">
+                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20 w-[10%]">
                   №
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20">
+                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20">
                   Профиль тестирования
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20">
+                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20 w-[30%]">
                   Дата
                 </th>
               </tr>
@@ -61,52 +59,13 @@ export default function Exams() {
             <tbody className="divide-y divide-primary/10">
               {primaryExams.map((exam, num) => (
                 <tr key={num} className="hover:bg-primary/5 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary">
+                  <td className="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-xs sm:text-sm font-medium text-primary">
                     {num + 1}
                   </td>
-                  <td className="px-6 py-4 text-sm text-primary/80">
+                  <td className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-primary/80">
                     {exam.subject}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-primary/80">
-                    {exam.date}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          {/* Выпускные экзамены */}
-          <Title
-            text={
-              'График национальных выпускных экзаменов за гимназический цикл на 2023-2024 уч.г.'
-            }
-            size="md"
-            className="text-primary font-bold text-center"
-          />
-          <table className="min-w-full bg-background border border-primary/20 rounded-lg">
-            <thead>
-              <tr className="bg-primary/10">
-                <th className="px-6 py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20">
-                  №
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20">
-                  Экзаменационная дисциплина
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20">
-                  Дата
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-primary/10">
-              {graduationExams.map((exam, num) => (
-                <tr key={num} className="hover:bg-primary/5 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary">
-                    {num + 1}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-primary/80">
-                    {exam.subject}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-primary/80">
+                  <td className="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-xs sm:text-sm text-primary/80">
                     {exam.date}
                   </td>
                 </tr>
@@ -115,7 +74,46 @@ export default function Exams() {
           </table>
         </div>
 
-        <p className="mt-6 text-center text-sm text-primary/70">
+        {/* Выпускные экзамены */}
+        <Title
+          text="График национальных выпускных экзаменов за гимназический цикл на 2023-2024 уч.г."
+          size="md"
+          className="text-primary font-bold text-center mb-4 sm:mb-6 mt-6 sm:mt-8"
+        />
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-background border border-primary/20 rounded-lg">
+            <thead>
+              <tr className="bg-primary/10">
+                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20 w-[10%]">
+                  №
+                </th>
+                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20">
+                  Экзаменационная дисциплина
+                </th>
+                <th className="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20 w-[30%]">
+                  Дата
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-primary/10">
+              {graduationExams.map((exam, num) => (
+                <tr key={num} className="hover:bg-primary/5 transition-colors">
+                  <td className="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-xs sm:text-sm font-medium text-primary">
+                    {num + 1}
+                  </td>
+                  <td className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm text-primary/80">
+                    {exam.subject}
+                  </td>
+                  <td className="px-2 sm:px-4 py-2 sm:py-3 whitespace-nowrap text-xs sm:text-sm text-primary/80">
+                    {exam.date}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p className="mt-4 sm:mt-6 text-center text-xs sm:text-sm text-primary/70">
           * Даты могут быть изменены в соответствии с официальными
           распоряжениями Министерства Просвещения. Следите за обновлениями на
           сайте гимназии.

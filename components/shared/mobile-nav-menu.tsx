@@ -1,8 +1,9 @@
-// MobileNavMenu.tsx
+// mobile-nav-menu.tsx
 'use client';
 
 import * as React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,8 +13,12 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Menu } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 export function MobileNavMenu() {
+  const pathname = usePathname();
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -22,17 +27,25 @@ export function MobileNavMenu() {
           <span className="sr-only">Open menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+      <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+        <DialogTitle className="text-lg font-medium hidden">
+          Навигация по сайту
+        </DialogTitle>
         <Accordion type="single" collapsible className="w-full">
           {/* Главная */}
           <AccordionItem value="main" className="mt-8 px-4">
-            <AccordionTrigger>Главная</AccordionTrigger>
+            <AccordionTrigger className={cn(pathname === '/' && 'font-bold')}>
+              Главная
+            </AccordionTrigger>
             <AccordionContent>
               <ul className="grid gap-4">
                 <li>
                   <Link
                     href="/"
-                    className="block p-2 hover:bg-muted rounded font-medium"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded font-medium',
+                      pathname === '/' && 'font-bold bg-muted'
+                    )}
                   >
                     На главную страницу
                   </Link>
@@ -40,7 +53,11 @@ export function MobileNavMenu() {
                 <li>
                   <Link
                     href="/regulations-on-functioning"
-                    className="block p-2 hover:bg-muted rounded"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/regulations-on-functioning' &&
+                        'font-bold bg-muted'
+                    )}
                   >
                     <div className="font-medium">
                       Положение о функционировании
@@ -54,7 +71,10 @@ export function MobileNavMenu() {
                 <li>
                   <Link
                     href="/charter"
-                    className="block p-2 hover:bg-muted rounded"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/charter' && 'font-bold bg-muted'
+                    )}
                   >
                     <div className="font-medium">Устав учебного заведения</div>
                     <p className="text-sm text-muted-foreground">
@@ -66,7 +86,11 @@ export function MobileNavMenu() {
                 <li>
                   <Link
                     href="/regulations-on-assessment"
-                    className="block p-2 hover:bg-muted rounded"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/regulations-on-assessment' &&
+                        'font-bold bg-muted'
+                    )}
                   >
                     <div className="font-medium">Положение об оценивании</div>
                     <p className="text-sm text-muted-foreground">
@@ -80,23 +104,35 @@ export function MobileNavMenu() {
           </AccordionItem>
 
           {/* О школе */}
-
           <Link
             href="/about"
-            className="block p-4 hover:bg-muted rounded border-b font-medium text-sm"
+            className={cn(
+              'block p-4 hover:bg-muted rounded border-b font-medium text-sm',
+              pathname === '/about' && 'font-bold bg-muted'
+            )}
           >
             О школе
           </Link>
 
           {/* Учителя */}
           <AccordionItem value="teachers" className="px-4">
-            <AccordionTrigger>Учителя</AccordionTrigger>
+            <AccordionTrigger
+              className={cn(
+                (pathname === '/staffing' || pathname === '/class-teachers') &&
+                  'font-bold'
+              )}
+            >
+              Учителя
+            </AccordionTrigger>
             <AccordionContent>
               <ul className="grid gap-4">
                 <li>
                   <Link
                     href="/staffing"
-                    className="block p-2 hover:bg-muted rounded"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/staffing' && 'font-bold bg-muted'
+                    )}
                   >
                     Кадровый состав
                   </Link>
@@ -104,7 +140,10 @@ export function MobileNavMenu() {
                 <li>
                   <Link
                     href="/class-teachers"
-                    className="block p-2 hover:bg-muted rounded"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/class-teachers' && 'font-bold bg-muted'
+                    )}
                   >
                     Классные руководители
                   </Link>
@@ -115,13 +154,24 @@ export function MobileNavMenu() {
 
           {/* Для родителей */}
           <AccordionItem value="parents" className="px-4">
-            <AccordionTrigger>Для родителей</AccordionTrigger>
+            <AccordionTrigger
+              className={cn(
+                (pathname === '/exams' ||
+                  pathname === '/first-grade-admission') &&
+                  'font-bold'
+              )}
+            >
+              Для родителей
+            </AccordionTrigger>
             <AccordionContent>
               <ul className="grid gap-4">
                 <li>
                   <Link
                     href="/exams"
-                    className="block p-2 hover:bg-muted rounded"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/exams' && 'font-bold bg-muted'
+                    )}
                   >
                     Экзамены 2025
                   </Link>
@@ -129,7 +179,11 @@ export function MobileNavMenu() {
                 <li>
                   <Link
                     href="/first-grade-admission"
-                    className="block p-2 hover:bg-muted rounded"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/first-grade-admission' &&
+                        'font-bold bg-muted'
+                    )}
                   >
                     О приёме в первый класс
                   </Link>
@@ -140,13 +194,25 @@ export function MobileNavMenu() {
 
           {/* Планы */}
           <AccordionItem value="plans" className="px-4">
-            <AccordionTrigger>Планы</AccordionTrigger>
+            <AccordionTrigger
+              className={cn(
+                (pathname === '/lessons-schedule' ||
+                  pathname === '/call-schedule' ||
+                  pathname === '/plans') &&
+                  'font-bold'
+              )}
+            >
+              Планы
+            </AccordionTrigger>
             <AccordionContent>
               <ul className="grid gap-4">
                 <li>
                   <Link
                     href="/lessons-schedule"
-                    className="block p-2 hover:bg-muted rounded"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/lessons-schedule' && 'font-bold bg-muted'
+                    )}
                   >
                     Расписание уроков
                   </Link>
@@ -154,7 +220,10 @@ export function MobileNavMenu() {
                 <li>
                   <Link
                     href="/call-schedule"
-                    className="block p-2 hover:bg-muted rounded"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/call-schedule' && 'font-bold bg-muted'
+                    )}
                   >
                     Расписание звонков
                   </Link>
@@ -162,7 +231,10 @@ export function MobileNavMenu() {
                 <li>
                   <Link
                     href="/plans"
-                    className="block p-2 hover:bg-muted rounded"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/plans' && 'font-bold bg-muted'
+                    )}
                   >
                     Планы
                   </Link>
@@ -173,13 +245,23 @@ export function MobileNavMenu() {
 
           {/* Отчёты */}
           <AccordionItem value="reports" className="px-4">
-            <AccordionTrigger>Отчёты</AccordionTrigger>
+            <AccordionTrigger
+              className={cn(
+                (pathname === '/reports' || pathname === '/budget') &&
+                  'font-bold'
+              )}
+            >
+              Отчёты
+            </AccordionTrigger>
             <AccordionContent>
               <ul className="grid gap-4">
                 <li>
                   <Link
                     href="/reports"
-                    className="block p-2 hover:bg-muted rounded"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/reports' && 'font-bold bg-muted'
+                    )}
                   >
                     Отчёты
                   </Link>
@@ -187,7 +269,10 @@ export function MobileNavMenu() {
                 <li>
                   <Link
                     href="/budget"
-                    className="block p-2 hover:bg-muted rounded"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/budget' && 'font-bold bg-muted'
+                    )}
                   >
                     Бюджет
                   </Link>
@@ -199,7 +284,10 @@ export function MobileNavMenu() {
           {/* Контакты */}
           <Link
             href="/contacts"
-            className="block p-4 hover:bg-muted rounded border-b font-medium text-sm"
+            className={cn(
+              'block p-4 hover:bg-muted rounded border-b font-medium text-sm',
+              pathname === '/contacts' && 'font-bold bg-muted'
+            )}
           >
             Контакты
           </Link>

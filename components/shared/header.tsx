@@ -20,11 +20,12 @@ export const Header: React.FC<Props> = ({ className }) => {
       )}
     >
       <Container className="flex items-center justify-between p-4 gap-4 relative">
-        <ThemeToggleButton />
+        <MobileNavMenu />
+
         <Link
           className={cn(
             'flex items-center justify-center w-full sm:w-auto text-xl font-medium',
-            'sm:justify-start' // Left-align on larger screens
+            'sm:justify-start'
           )}
           href="/"
         >
@@ -34,7 +35,12 @@ export const Header: React.FC<Props> = ({ className }) => {
           <div className="hidden md:block">
             <NavigationMenuDemo />
           </div>
-          <MobileNavMenu />
+          <div className="md:hidden block">
+            <ThemeToggleButton />
+          </div>
+          <div className="md:block hidden">
+            <ThemeToggleButton />
+          </div>
         </div>
       </Container>
     </header>

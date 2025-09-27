@@ -37,8 +37,17 @@ export const Banner: React.FC<Props> = ({ className, image, title }) => {
         />
         <div className="absolute inset-0 bg-black/40 backdrop-blur-xs" />
 
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Title text={title} size="4xl" className="text-white font-bold" />
+        <div className="absolute inset-0 flex items-center justify-center text-center">
+          <Title
+            text={title}
+            size="4xl"
+            className="text-white font-bold hidden md:block"
+          />
+          <Title
+            text={title}
+            size="xl"
+            className="text-white font-bold md:hidden"
+          />
         </div>
       </div>
     </>
