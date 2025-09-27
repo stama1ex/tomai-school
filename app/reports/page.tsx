@@ -1,27 +1,44 @@
+'use client';
+
 import { Banner } from '@/components/shared/banner';
 import { Container } from '@/components/shared/container';
 import { Pdf } from '@/components/shared/pdf';
-import { PdfDocument } from '@/types';
+import { useEffect, useState } from 'react';
 
-const reports: PdfDocument[] = [
-  {
-    title: 'Отчет 1',
-    pdfUrl:
-      'https://drive.google.com/file/d/1TrV8EV6exPW4spWC3JUsDkpODZaOwjZh/preview',
-  },
-  {
-    title: 'Отчет 2',
-    pdfUrl:
-      'https://drive.google.com/file/d/1b98Pf05UzZvsIdX75XI6CEzhgiQVWxJl/preview',
-  },
-  {
-    title: 'Отчет 3',
-    pdfUrl:
-      'https://drive.google.com/file/d/115QZ1Hc54X9Oqn1InfxGo9dKNWNbABx7/preview',
-  },
-];
+interface PdfDocument {
+  title?: string;
+  pdfUrl: string;
+}
 
 export default function Reports() {
+  const [reports, setReports] = useState<PdfDocument[]>([]);
+
+  useEffect(() => {
+    fetch('/api/reports')
+      .then((res) => res.json())
+      .then(setReports);
+  }, []);
+
+  const handleEdit = async (idx: number, data: PdfDocument) => {
+    await fetch('/api/reports', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ index: idx, data }),
+    });
+    const updated = [...reports];
+    updated[idx] = data;
+    setReports(updated);
+  };
+
+  const handleDelete = async (idx: number) => {
+    await fetch('/api/reports', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ index: idx }),
+    });
+    setReports(reports.filter((_, i) => i !== idx));
+  };
+
   return (
     <>
       <Banner image="/background.jpg" title="Отчёты" className="mb-8" />
@@ -32,7 +49,14 @@ export default function Reports() {
               key={idx}
               className="flex flex-col border rounded-lg overflow-hidden"
             >
-              <Pdf url={report.pdfUrl} title={report.title} />
+              <Pdf
+                url={report.pdfUrl}
+                title={report.title}
+                onEdit={(data) =>
+                  handleEdit(idx, { pdfUrl: data.url, title: data.title })
+                }
+                onDelete={() => handleDelete(idx)}
+              />
             </div>
           ))}
         </div>

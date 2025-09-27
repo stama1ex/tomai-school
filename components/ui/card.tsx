@@ -1,21 +1,109 @@
-import { cn } from '@/lib/utils';
-import React from 'react';
+'use client';
 
-interface Props {
+import { cn } from '@/lib/utils';
+import React, { useState } from 'react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { Pencil, Trash } from 'lucide-react';
+import { useAdminStore } from '@/store/admin';
+import { toast } from 'sonner';
+
+interface CardItem {
   className?: string;
   primaryText: string;
   secondaryText: string;
+  onEdit?: (newData: { primaryText: string; secondaryText: string }) => void;
+  onDelete?: () => void;
 }
 
-export const Card: React.FC<Props> = ({
+export const Card: React.FC<CardItem> = ({
   className,
   primaryText,
   secondaryText,
+  onEdit,
+  onDelete,
 }) => {
+  const isAdmin = useAdminStore((s) => s.isAdmin);
+  const [newPrimary, setNewPrimary] = useState(primaryText);
+  const [newSecondary, setNewSecondary] = useState(secondaryText);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const handleSave = async () => {
+    try {
+      onEdit?.({
+        primaryText: newPrimary,
+        secondaryText: newSecondary,
+      });
+      setIsPopoverOpen(false); // Close Popover after saving
+      toast.success('Сотрудник обновлен!');
+    } catch (error) {
+      toast.error('Ошибка при обновлении сотрудника');
+      console.error('Error updating staff:', error);
+    }
+  };
+
   return (
-    <div className={cn(className, 'bg-background p-4 rounded-lg border')}>
-      <h3 className="text-lg font-semibold text-primary mb-2">{primaryText}</h3>
-      <p className="text-primary/80">{secondaryText}</p>
+    <div
+      className={cn(className, 'relative bg-background p-4 rounded-lg border')}
+    >
+      {isAdmin && (
+        <div className="absolute top-2 right-2 flex gap-2 z-10">
+          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button size="icon" variant="outline" className="cursor-pointer">
+                <Pencil className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <div className="flex flex-col gap-2">
+                <input
+                  type="text"
+                  placeholder="Имя"
+                  value={newPrimary}
+                  onChange={(e) => setNewPrimary(e.target.value)}
+                  className="border rounded p-2 text-sm"
+                />
+                <input
+                  type="text"
+                  placeholder="Должность"
+                  value={newSecondary}
+                  onChange={(e) => setNewSecondary(e.target.value)}
+                  className="border rounded p-2 text-sm"
+                />
+                <Button
+                  onClick={handleSave}
+                  size="sm"
+                  className="cursor-pointer"
+                >
+                  Сохранить
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={onDelete}
+            className="bg-background cursor-pointer"
+          >
+            <Trash className="h-4 w-4 text-destructive" />
+          </Button>
+        </div>
+      )}
+
+      <h3 className="text-lg font-semibold text-primary mb-2">
+        {newPrimary ||
+          (isAdmin ? <i className="text-primary/50">Без названия</i> : '')}
+      </h3>
+      <p className="text-primary/80">
+        {newSecondary ||
+          (isAdmin ? <i className="text-primary/50">Без описания</i> : '')}
+      </p>
     </div>
   );
 };

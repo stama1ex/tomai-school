@@ -1,18 +1,86 @@
+'use client';
+
 import { cn } from '@/lib/utils';
-import React from 'react';
+import React, { useState } from 'react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { Pencil, Trash } from 'lucide-react';
+import { useAdminStore } from '@/store/admin';
 
 interface PdfItem {
   className?: string;
   url: string;
   title?: string;
+  onEdit?: (newData: { title?: string; url: string }) => void;
+  onDelete?: () => void;
 }
 
-export const Pdf: React.FC<PdfItem> = ({ className, url, title }) => {
+export const Pdf: React.FC<PdfItem> = ({
+  className,
+  url,
+  title,
+  onEdit,
+  onDelete,
+}) => {
+  const isAdmin = useAdminStore((s) => s.isAdmin);
+  const [newTitle, setNewTitle] = useState(title || '');
+  const [newUrl, setNewUrl] = useState(url);
+
   return (
-    <div className={cn(className)}>
+    <div className={cn(className, 'relative')}>
+      {isAdmin && (
+        <div className="absolute top-2 right-2 flex gap-2 z-5">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button size="icon" variant="outline">
+                <Pencil className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <div className="flex flex-col gap-2">
+                <input
+                  type="text"
+                  placeholder="Название"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  className="border rounded p-2 text-sm"
+                />
+                <input
+                  type="text"
+                  placeholder="URL (обязательно /preview)"
+                  value={newUrl}
+                  onChange={(e) => setNewUrl(e.target.value)}
+                  className="border rounded p-2 text-sm"
+                />
+                <Button
+                  onClick={() => onEdit?.({ title: newTitle, url: newUrl })}
+                  size="sm"
+                >
+                  Сохранить
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          <Button size="icon" variant="destructive" onClick={onDelete}>
+            <Trash className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
+
       {title && (
         <h3 className="bg-primary/10 text-primary font-semibold p-4 text-center">
           {title}
+        </h3>
+      )}
+
+      {!title && isAdmin && (
+        <h3 className="bg-primary/10 text-primary/70 font-semibold italic p-4 text-center">
+          Без названия
         </h3>
       )}
 

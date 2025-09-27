@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/shared/header';
 import { ThemeProvider } from '@/components/shared/theme-provider';
+import { AdminButton } from '@/components/shared/admin-button';
+import { Toaster } from 'sonner';
 
 const inter = Inter({
   variable: '--font-inter',
@@ -29,7 +31,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Header />
+          <AdminButton />
           {children}
+          <Toaster position="top-center" />
         </ThemeProvider>
       </body>
     </html>
