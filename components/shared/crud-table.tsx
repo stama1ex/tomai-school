@@ -205,7 +205,7 @@ export const CrudTable: React.FC<CrudTableProps> = ({
         <Title
           text={title}
           size="md"
-          className="text-primary font-bold text-center mb-6"
+          className="dark:text-white font-bold text-center mb-6"
         />
         <hr className="mb-6" />
 

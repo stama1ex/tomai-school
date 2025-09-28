@@ -232,7 +232,7 @@ export const PdfCrud: React.FC<Props> = ({ apiPath, title }) => {
       <Title
         text={title || 'Документы'}
         size="md"
-        className="text-primary font-bold text-center mb-6"
+        className="dark:text-white font-bold text-center mb-6"
       />
       <hr className="mb-6" />
       {isAdmin && (
@@ -256,7 +256,7 @@ export const PdfCrud: React.FC<Props> = ({ apiPath, title }) => {
         </div>
       )}
       {!isLoading && docs.length === 0 && (
-        <p className="text-center text-primary/70">Документы отсутствуют</p>
+        <p className="text-center dark:text-white/70">Документы отсутствуют</p>
       )}
       {!isLoading && docs.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

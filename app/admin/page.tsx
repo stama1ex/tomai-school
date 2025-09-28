@@ -33,7 +33,7 @@ export default function AdminLogin() {
       <Title
         text="Вход для администратора"
         size="lg"
-        className="text-primary font-bold text-center mb-6"
+        className="dark:text-white font-bold text-center mb-6"
       />
       <form
         onSubmit={handleSubmit}

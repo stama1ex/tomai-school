@@ -10,11 +10,13 @@ export default function About() {
         <Title
           text={'История школы'}
           size="md"
-          className="text-primary font-bold text-center mb-6"
+          className="dark:text-white font-bold text-center mb-6"
         />
         <hr className="mb-6" />
-        <div className="prose max-w-none text-primary/90">
-          <h1 className="text-3xl font-bold text-primary mt-8 mb-4">История</h1>
+        <div className="prose max-w-none dark:text-white/90">
+          <h1 className="text-3xl font-bold dark:text-white mt-8 mb-4">
+            История
+          </h1>
 
           <p className="mb-4">
             История школы села Томай берет свое начало с середины XVIII века.
@@ -66,7 +68,7 @@ export default function About() {
             села Томай.
           </p>
 
-          <h1 className="text-3xl font-bold text-primary mt-8 mb-4">
+          <h1 className="text-3xl font-bold dark:text-white mt-8 mb-4">
             Современность
           </h1>
 
@@ -103,7 +105,7 @@ export default function About() {
             родителей.
           </p>
 
-          <h2 className="text-2xl font-semibold text-primary mt-8 mb-4">
+          <h2 className="text-2xl font-semibold dark:text-white mt-8 mb-4">
             Внеурочная деятельность
           </h2>
 

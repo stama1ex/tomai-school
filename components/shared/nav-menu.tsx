@@ -26,7 +26,7 @@ export function NavigationMenuDemo() {
           <NavigationMenuTrigger
             className={cn(
               'dark:bg-transparent',
-              pathname === '/' && 'font-bold text-primary'
+              pathname === '/' && 'font-bold dark:text-white'
             )}
           >
             Главная

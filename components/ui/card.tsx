@@ -93,13 +93,13 @@ export const Card: React.FC<CardItem> = ({
       )}
 
       <div className="pr-16">
-        <h3 className="text-lg font-semibold text-primary mb-2 break-words">
+        <h3 className="text-lg font-semibold dark:text-white mb-2 break-words">
           {newPrimary ||
-            (isAdmin ? <i className="text-primary/50">Без названия</i> : '')}
+            (isAdmin ? <i className="dark:text-white/50">Без названия</i> : '')}
         </h3>
-        <p className="text-primary/80 break-words">
+        <p className="dark:text-white/80 break-words">
           {newSecondary ||
-            (isAdmin ? <i className="text-primary/50">Без описания</i> : '')}
+            (isAdmin ? <i className="dark:text-white/50">Без описания</i> : '')}
         </p>
       </div>
     </div>

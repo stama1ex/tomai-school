@@ -24,17 +24,17 @@ export default function CallSchedule() {
         <Title
           text="Расписание звонков на 2024-2025 учебный год"
           size="md"
-          className="text-primary font-bold text-center mb-6"
+          className="dark:text-white font-bold text-center mb-6"
         />
 
         <div className="overflow-x-auto">
           <table className="mx-auto md:min-w-full bg-background border border-primary/20 rounded-lg">
             <thead>
               <tr className="bg-primary/10">
-                <th className="px-6 py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20">
+                <th className="px-6 py-3 text-left text-xs font-bold dark:text-white uppercase tracking-wider border-b border-primary/20">
                   № урока
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-primary uppercase tracking-wider border-b border-primary/20">
+                <th className="px-6 py-3 text-left text-xs font-bold dark:text-white uppercase tracking-wider border-b border-primary/20">
                   Время
                 </th>
               </tr>
@@ -45,10 +45,10 @@ export default function CallSchedule() {
                   key={item.lesson}
                   className="hover:bg-primary/5 transition-colors"
                 >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium dark:text-white">
                     {item.lesson}
                   </td>
-                  <td className="px-6 py-4 text-sm text-primary/80">
+                  <td className="px-6 py-4 text-sm dark:text-white/80">
                     {item.time}
                   </td>
                 </tr>

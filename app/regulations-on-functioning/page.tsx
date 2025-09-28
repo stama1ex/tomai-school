@@ -14,10 +14,10 @@ export default function RegulationsOnFunctioning() {
         <Title
           text={'Общие положения'}
           size="md"
-          className="text-primary font-bold text-center mb-6"
+          className="dark:text-white font-bold text-center mb-6"
         />
         <hr className="mb-6" />
-        <div className="prose max-w-none text-primary/90">
+        <div className="prose max-w-none dark:text-white/90">
           <p className="mb-4">
             Положение об организации и функционировании гимназии с. Томай
             устанавливает порядок организации и функционирования гимназии и
@@ -52,7 +52,7 @@ export default function RegulationsOnFunctioning() {
             нормативными актами АТО Гагаузия.
           </p>
 
-          <h2 className="text-2xl font-semibold text-primary mt-8 mb-4">
+          <h2 className="text-2xl font-semibold dark:text-white mt-8 mb-4">
             Образовательные циклы
           </h2>
           <p className="mb-4">
@@ -84,7 +84,7 @@ export default function RegulationsOnFunctioning() {
             образования АТО Гагаузия.
           </p>
 
-          <h2 className="text-2xl font-semibold text-primary mt-8 mb-4">
+          <h2 className="text-2xl font-semibold dark:text-white mt-8 mb-4">
             Запреты в учебном заведении
           </h2>
           <p className="mb-4">В гимназии запрещается:</p>
@@ -103,7 +103,7 @@ export default function RegulationsOnFunctioning() {
             </li>
           </ul>
 
-          <h2 className="text-2xl font-semibold text-primary mt-8 mb-4">
+          <h2 className="text-2xl font-semibold dark:text-white mt-8 mb-4">
             Обучение учащихся с особыми образовательными потребностями
           </h2>
           <p className="mb-4">
@@ -123,7 +123,7 @@ export default function RegulationsOnFunctioning() {
             нормативными документами, утвержденными Министерством образования.
           </p>
 
-          <h2 className="text-2xl font-semibold text-primary mt-8 mb-4">
+          <h2 className="text-2xl font-semibold dark:text-white mt-8 mb-4">
             Организация учебного процесса
           </h2>
           <p className="mb-4">
@@ -158,7 +158,7 @@ export default function RegulationsOnFunctioning() {
             требования школьного куррикулума.
           </p>
 
-          <h2 className="text-2xl font-semibold text-primary mt-8 mb-4">
+          <h2 className="text-2xl font-semibold dark:text-white mt-8 mb-4">
             Нормы домашних заданий
           </h2>
           <p className="mb-4">
@@ -175,7 +175,7 @@ export default function RegulationsOnFunctioning() {
             <li>8–9 классы — 3–3,5 часа.</li>
           </ul>
 
-          <h2 className="text-2xl font-semibold text-primary mt-8 mb-4">
+          <h2 className="text-2xl font-semibold dark:text-white mt-8 mb-4">
             Оценивание школьных результатов
           </h2>
           <p className="mb-4">

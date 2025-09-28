@@ -8,8 +8,8 @@ export default function Contacts() {
       <Container className="px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
           {/* Левая часть с текстом */}
-          <div className="flex flex-col gap-4 text-primary/90">
-            <h2 className="text-xl font-bold text-primary mb-4">
+          <div className="flex flex-col gap-4 dark:text-white/90">
+            <h2 className="text-xl font-bold dark:text-white mb-4">
               Свяжитесь с нами
             </h2>
             <p>РМ Молдова</p>
@@ -21,7 +21,7 @@ export default function Contacts() {
               e-mail:{' '}
               <a
                 href="mailto:tomailiceuteor@mail.ru"
-                className="text-primary underline hover:text-primary/80 transition-colors"
+                className="dark:text-white underline hover:dark:text-white/80 transition-colors"
               >
                 tomailiceuteor@mail.ru
               </a>

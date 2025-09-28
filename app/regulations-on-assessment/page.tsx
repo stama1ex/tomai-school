@@ -16,12 +16,12 @@ export default function RegulationsOnAssessment() {
             'Положение об оценивании результатов обучения, переводе и окончании начального и общесреднего образования.'
           }
           size="md"
-          className="text-primary font-bold text-center mb-6"
+          className="dark:text-white font-bold text-center mb-6"
         />
         <hr />
 
-        <div className="prose max-w-none text-primary/90">
-          <h1 className="text-3xl font-bold text-primary mt-8 mb-4">
+        <div className="prose max-w-none dark:text-white/90">
+          <h1 className="text-3xl font-bold dark:text-white mt-8 mb-4">
             ГЛАВА I. ОБЩИЕ ПОЛОЖЕНИЯ
           </h1>
 
@@ -194,12 +194,12 @@ export default function RegulationsOnAssessment() {
             ситуацию учащихся, согласно данного регламента;
           </p>
 
-          <h1 className="text-3xl font-bold text-primary mt-8 mb-4">
+          <h1 className="text-3xl font-bold dark:text-white mt-8 mb-4">
             ГЛАВА II. ОЦЕНИВАНИЕ УЧАЩИХСЯ. РАСЧЕТ СРЕДНЕСЕМЕСТРОВЫХ/
             ГОДОВЫХ/ИТОГОВЫХ ОЦЕНОК
           </h1>
 
-          <h2 className="text-2xl font-semibold text-primary mt-8 mb-4">
+          <h2 className="text-2xl font-semibold dark:text-white mt-8 mb-4">
             РАЗДЕЛ 1. ФОРМЫ И МЕТОДЫ ОЦЕНИВАНИЯ
           </h2>
 
@@ -254,7 +254,7 @@ export default function RegulationsOnAssessment() {
             допущения двух контрольных в один день в одном и том же классе.
           </p>
 
-          <h2 className="text-2xl font-semibold text-primary mt-8 mb-4">
+          <h2 className="text-2xl font-semibold dark:text-white mt-8 mb-4">
             РАЗДЕЛ 2. УЧЕТ ШКОЛЬНЫХ РЕЗУЛЬТАТОВ
           </h2>
 
@@ -351,7 +351,7 @@ export default function RegulationsOnAssessment() {
             журналом.
           </p>
 
-          <h2 className="text-2xl font-semibold text-primary mt-8 mb-4">
+          <h2 className="text-2xl font-semibold dark:text-white mt-8 mb-4">
             РАЗДЕЛ 3. ОЦЕНИВАНИЕ УЧАЩИХСЯ И ВЫСЧИТЫВАНИЕ СРЕДНЕ
             СЕМЕСТРОВЫХ/ГОДОВЫХ/ИТОГОВЫХ ОЦЕНОК В НАЧАЛЬНОМ ЦИКЛЕ
           </h2>
@@ -413,7 +413,7 @@ export default function RegulationsOnAssessment() {
             в соответствии с Методологии внедрения критериального оценивания.
           </p>
 
-          <h2 className="text-2xl font-semibold text-primary mt-8 mb-4">
+          <h2 className="text-2xl font-semibold dark:text-white mt-8 mb-4">
             РАЗДЕЛ 4. ОЦЕНИВАНИЕ УЧАЩИХСЯ И ВЫСЧИТЫВАНИЕ СРЕДНЕ
             СЕМЕСТРОВЫХ/ГОДОВЫХ/ИТОГОВЫХ ОЦЕНОК В ГИМНАЗИЧЕСКОМ ЦИКЛЕ
           </h2>
@@ -504,7 +504,7 @@ export default function RegulationsOnAssessment() {
             данного Положения.
           </p>
 
-          <h2 className="text-2xl font-semibold text-primary mt-8 mb-4">
+          <h2 className="text-2xl font-semibold dark:text-white mt-8 mb-4">
             РАЗДЕЛ 5. ОЦЕНИВАНИЕ УЧАЩИХСЯ И ВЫСЧИТЫВАНИЕ СРЕДНЕ
             СЕМЕСТРОВЫХ/ГОДОВЫХ/ИТОГОВЫХ ОЦЕНОК В ЛИЦЕЙСКОМ ЦИКЛЕ
           </h2>
@@ -699,7 +699,7 @@ export default function RegulationsOnAssessment() {
             подсчитывается после сдачи задолженностей.
           </p>
 
-          <h2 className="text-2xl font-semibold text-primary mt-8 mb-4">
+          <h2 className="text-2xl font-semibold dark:text-white mt-8 mb-4">
             РАЗДЕЛ 6. ОЦЕНИВАНИЕ УЧАЩИХСЯ И ВЫСЧИТЫВАНИЕ СРЕДНЕ
             СЕМЕСТРОВЫХ/ГОДОВЫХ/ИТОГОВЫХ ОЦЕНОК ПО ФИЗИЧЕСКОЙ КУЛЬТУРЕ
           </h2>
@@ -762,7 +762,7 @@ export default function RegulationsOnAssessment() {
             упражнений, компетенций по отношению к здоровому образу жизни.
           </p>
 
-          <h1 className="text-3xl font-bold text-primary mt-8 mb-4">
+          <h1 className="text-3xl font-bold dark:text-white mt-8 mb-4">
             ГЛАВА III. ПЕРЕВОД УЧАЩИХСЯ. ДОПУСК УЧАЩИХСЯ К ВЫПУСКНЫМ ЭКЗАМЕНАМ
           </h1>
 
@@ -1063,7 +1063,7 @@ export default function RegulationsOnAssessment() {
             оценки ниже «5» (пяти) по дисциплинам из Учебного плана.
           </p>
 
-          <h1 className="text-3xl font-bold text-primary mt-8 mb-4">
+          <h1 className="text-3xl font-bold dark:text-white mt-8 mb-4">
             ГЛАВА IV. ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ
           </h1>
 

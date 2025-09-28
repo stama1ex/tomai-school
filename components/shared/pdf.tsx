@@ -93,13 +93,13 @@ export const Pdf: React.FC<PdfItem> = ({
       )}
 
       {title && (
-        <h3 className="bg-primary/10 text-primary font-semibold p-4 text-center">
+        <h3 className="bg-primary/10 dark:text-white font-semibold p-4 text-center">
           {title}
         </h3>
       )}
 
       {!title && isAdmin && (
-        <h3 className="bg-primary/10 text-primary/70 font-semibold italic p-4 text-center">
+        <h3 className="bg-primary/10 dark:text-white/70 font-semibold italic p-4 text-center">
           Без названия
         </h3>
       )}
