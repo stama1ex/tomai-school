@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import {
   Popover,
   PopoverContent,
@@ -8,11 +8,15 @@ import {
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
 
 interface AddCardButtonProps {
-  onAdd: (newData: { name: string; role: string }) => Promise<void>;
-  placeholder?: string;
+  onAdd: (newData: {
+    inputPrimary: string;
+    inputSecondary: string;
+    name: string;
+    role: string;
+  }) => Promise<void>;
+  placeholder?: ReactNode;
   inputPrimary: string;
   inputSecondary: string;
 }
@@ -30,15 +34,15 @@ export const AddCardButton: React.FC<AddCardButtonProps> = ({
   const handleSave = async () => {
     try {
       await onAdd({
+        inputPrimary: newRole || 'Должность',
+        inputSecondary: newName || 'Новый сотрудник',
         name: newName || 'Новый сотрудник',
         role: newRole || 'Должность',
       });
       setIsPopoverOpen(false);
       setNewName('');
       setNewRole('');
-      toast.success('Сотрудник добавлен!');
     } catch (error) {
-      toast.error('Ошибка при добавлении сотрудника');
       console.error('Error adding staff:', error);
     }
   };
@@ -46,9 +50,7 @@ export const AddCardButton: React.FC<AddCardButtonProps> = ({
   return (
     <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
       <PopoverTrigger asChild>
-        <Button className="cursor-pointer">
-          {placeholder || 'Добавить карточку'}
-        </Button>
+        <Button>{placeholder || 'Добавить карточку'}</Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="flex flex-col gap-2">
@@ -62,7 +64,7 @@ export const AddCardButton: React.FC<AddCardButtonProps> = ({
             onChange={(e) => setNewRole(e.target.value)}
             placeholder={inputSecondary}
           />
-          <Button onClick={handleSave} size="sm" className="cursor-pointer">
+          <Button onClick={handleSave} size="sm">
             Сохранить
           </Button>
         </div>

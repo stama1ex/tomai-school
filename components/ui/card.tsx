@@ -10,7 +10,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Pencil, Trash } from 'lucide-react';
 import { useAdminStore } from '@/store/admin';
-import { toast } from 'sonner';
 
 interface CardItem {
   className?: string;
@@ -39,9 +38,7 @@ export const Card: React.FC<CardItem> = ({
         secondaryText: newSecondary,
       });
       setIsPopoverOpen(false); // Close Popover after saving
-      toast.success('Сотрудник обновлен!');
     } catch (error) {
-      toast.error('Ошибка при обновлении сотрудника');
       console.error('Error updating staff:', error);
     }
   };
@@ -54,7 +51,7 @@ export const Card: React.FC<CardItem> = ({
         <div className="absolute top-2 right-2 flex gap-2 z-10">
           <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
-              <Button size="icon" variant="outline" className="cursor-pointer">
+              <Button size="icon" variant="outline">
                 <Pencil className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
@@ -74,11 +71,7 @@ export const Card: React.FC<CardItem> = ({
                   onChange={(e) => setNewSecondary(e.target.value)}
                   className="border rounded p-2 text-sm"
                 />
-                <Button
-                  onClick={handleSave}
-                  size="sm"
-                  className="cursor-pointer"
-                >
+                <Button onClick={handleSave} size="sm">
                   Сохранить
                 </Button>
               </div>
@@ -89,7 +82,7 @@ export const Card: React.FC<CardItem> = ({
             size="icon"
             variant="outline"
             onClick={onDelete}
-            className="bg-background cursor-pointer"
+            className="bg-background"
           >
             <Trash className="h-4 w-4 text-destructive" />
           </Button>
