@@ -23,8 +23,8 @@ interface CrudTableProps {
   title: string;
   primaryLabel: string;
   secondaryLabel: string;
-  primaryLabelDisplay?: string; // 👈 добавлено
-  secondaryLabelDisplay?: string; // 👈 добавлено
+  primaryLabelDisplay?: string;
+  secondaryLabelDisplay?: string;
 }
 
 export const CrudTable: React.FC<CrudTableProps> = ({
@@ -34,8 +34,8 @@ export const CrudTable: React.FC<CrudTableProps> = ({
   title,
   primaryLabel,
   secondaryLabel,
-  primaryLabelDisplay, // 👈 добавлено
-  secondaryLabelDisplay, // 👈 добавлено
+  primaryLabelDisplay,
+  secondaryLabelDisplay,
 }) => {
   const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -228,8 +228,8 @@ export const CrudTable: React.FC<CrudTableProps> = ({
         {isAdmin && (
           <div className="flex justify-end mb-4">
             <AddCardButton
-              inputPrimary={primaryLabelDisplay || primaryLabel} // 👈 изменено
-              inputSecondary={secondaryLabelDisplay || secondaryLabel} // 👈 изменено
+              inputPrimary={primaryLabelDisplay || primaryLabel}
+              inputSecondary={secondaryLabelDisplay || secondaryLabel}
               placeholder={
                 <>
                   <Plus /> Добавить

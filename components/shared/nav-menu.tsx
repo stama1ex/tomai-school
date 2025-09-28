@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation'; // Import usePathname
+import { usePathname } from 'next/navigation';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -16,7 +16,7 @@ import {
 import { cn } from '@/lib/utils';
 
 export function NavigationMenuDemo() {
-  const pathname = usePathname(); // Get current route
+  const pathname = usePathname();
 
   return (
     <NavigationMenu viewport={false}>

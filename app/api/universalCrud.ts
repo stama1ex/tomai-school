@@ -8,7 +8,9 @@ export const createCrudHandlers = (tableName: string) => {
 
   const GET = async () => {
     try {
-      const result = await sql.query(`SELECT * FROM ${tableName}`);
+      const result = await sql.query(
+        `SELECT * FROM ${tableName} ORDER BY "order" ASC`
+      );
       return NextResponse.json(extractData(result));
     } catch (e) {
       console.error(e);
@@ -23,11 +25,10 @@ export const createCrudHandlers = (tableName: string) => {
     const body = await req.json();
     const id = body.id || uuidv4();
 
-    // Вставляем id в начало
     const keys = ['id', ...Object.keys(body).filter((k) => k !== 'id')];
     const values = [
       id,
-      ...Object.values(body).filter((v, i) => Object.keys(body)[i] !== 'id'),
+      ...Object.values(body).filter((_, i) => Object.keys(body)[i] !== 'id'),
     ];
 
     try {
@@ -46,7 +47,40 @@ export const createCrudHandlers = (tableName: string) => {
   };
 
   const PUT = async (req: Request) => {
-    const { id, newData } = await req.json();
+    const body = await req.json();
+
+    // Проверяем, является ли запрос обновлением порядка
+    if (body.items) {
+      try {
+        // Используем транзакцию для обновления порядка
+        await sql.query('BEGIN');
+        for (const { id, order } of body.items) {
+          const result = await sql.query(
+            `UPDATE ${tableName} SET "order" = $1 WHERE id = $2 RETURNING *`,
+            [order, id]
+          );
+          if (result.rowCount === 0) {
+            await sql.query('ROLLBACK');
+            return NextResponse.json(
+              { error: 'Item not found' },
+              { status: 404 }
+            );
+          }
+        }
+        await sql.query('COMMIT');
+        return NextResponse.json({ success: true });
+      } catch (e) {
+        await sql.query('ROLLBACK');
+        console.error(e);
+        return NextResponse.json(
+          { error: 'Failed to update order' },
+          { status: 500 }
+        );
+      }
+    }
+
+    // Обычное обновление записи
+    const { id, newData } = body;
     const keys = Object.keys(newData);
     const values = Object.values(newData);
     const setString = keys.map((k, i) => `${k} = $${i + 1}`).join(', ');
@@ -58,10 +92,9 @@ export const createCrudHandlers = (tableName: string) => {
         } RETURNING *`,
         [...values, id]
       );
-      if (result.rowCount === 0)
+      if (result.rowCount === 0) {
         return NextResponse.json({ error: 'Not found' }, { status: 404 });
-
-      // ⬇️ Изменено: возвращаем только success вместо полной записи
+      }
       return NextResponse.json({ success: true });
     } catch (e) {
       console.error(e);
@@ -75,8 +108,9 @@ export const createCrudHandlers = (tableName: string) => {
       const result = await sql.query(`DELETE FROM ${tableName} WHERE id = $1`, [
         id,
       ]);
-      if (result.rowCount === 0)
+      if (result.rowCount === 0) {
         return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      }
       return NextResponse.json({ success: true });
     } catch (e) {
       console.error(e);
