@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
+
 import { useEffect, useState } from 'react';
 import { Banner } from '@/components/shared/banner';
 import { Title } from '@/components/shared/title';
@@ -54,7 +55,9 @@ export const CrudTable: React.FC<CrudTableProps> = ({
             secondary: d[secondaryLabel.toLowerCase()],
           }))
         );
-      } else setItems([]);
+      } else {
+        setItems([]);
+      }
     } catch (e) {
       console.error(e);
       toast.error('Не удалось загрузить данные');
@@ -71,24 +74,10 @@ export const CrudTable: React.FC<CrudTableProps> = ({
     primaryText: string;
     secondaryText: string;
   }) => {
-    let body: any;
-
-    if (apiPath.includes('class-teachers')) {
-      body = {
-        class_id: newData.primaryText,
-        name: newData.secondaryText,
-      };
-    } else if (apiPath.includes('staffing')) {
-      body = {
-        position: newData.primaryText,
-        full_name: newData.secondaryText,
-      };
-    } else {
-      body = {
-        [primaryLabel.toLowerCase()]: newData.primaryText,
-        [secondaryLabel.toLowerCase()]: newData.secondaryText,
-      };
-    }
+    const body = {
+      [primaryLabel.toLowerCase()]: newData.primaryText,
+      [secondaryLabel.toLowerCase()]: newData.secondaryText,
+    };
 
     try {
       const res = await fetch(apiPath, {
@@ -104,16 +93,14 @@ export const CrudTable: React.FC<CrudTableProps> = ({
       }
 
       const created = await res.json();
-
-      const item: Item = apiPath.includes('class-teachers')
-        ? { id: created.id, primary: created.class_id, secondary: created.name }
-        : {
-            id: created.id,
-            primary: created.position,
-            secondary: created.full_name,
-          };
-
-      setItems((prev) => [...prev, item]);
+      setItems((prev) => [
+        ...prev,
+        {
+          id: created.id,
+          primary: created[primaryLabel.toLowerCase()],
+          secondary: created[secondaryLabel.toLowerCase()],
+        },
+      ]);
       toast.success('Добавлено!');
     } catch (e) {
       console.error(e);
@@ -128,9 +115,10 @@ export const CrudTable: React.FC<CrudTableProps> = ({
     try {
       const body = {
         id,
-        newData: apiPath.includes('class-teachers')
-          ? { class_id: newData.primaryText, name: newData.secondaryText }
-          : { position: newData.primaryText, full_name: newData.secondaryText },
+        newData: {
+          [primaryLabel.toLowerCase()]: newData.primaryText,
+          [secondaryLabel.toLowerCase()]: newData.secondaryText,
+        },
       };
 
       const res = await fetch(apiPath, {
@@ -179,12 +167,8 @@ export const CrudTable: React.FC<CrudTableProps> = ({
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 id: deleted.id,
-                ...(apiPath.includes('class-teachers')
-                  ? { class_id: deleted.primary, name: deleted.secondary }
-                  : {
-                      position: deleted.primary,
-                      full_name: deleted.secondary,
-                    }),
+                [primaryLabel.toLowerCase()]: deleted.primary,
+                [secondaryLabel.toLowerCase()]: deleted.secondary,
               }),
             });
             toast.success('Удаление отменено');
@@ -264,7 +248,7 @@ export const CrudTable: React.FC<CrudTableProps> = ({
                     secondaryText: newData.secondaryText,
                   })
                 }
-                onDelete={() => handleDelete(i.id, i.secondary)}
+                onDelete={() => handleDelete(i.id, i.primary)}
               />
             ))}
           </div>

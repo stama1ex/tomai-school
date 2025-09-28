@@ -13,8 +13,6 @@ interface AddCardButtonProps {
   onAdd: (newData: {
     inputPrimary: string;
     inputSecondary: string;
-    name: string;
-    role: string;
   }) => Promise<void>;
   placeholder?: ReactNode;
   inputPrimary: string;
@@ -28,20 +26,18 @@ export const AddCardButton: React.FC<AddCardButtonProps> = ({
   inputSecondary,
 }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newRole, setNewRole] = useState('');
+  const [newPrimary, setNewPrimary] = useState('');
+  const [newSecondary, setNewSecondary] = useState('');
 
   const handleSave = async () => {
     try {
       await onAdd({
-        inputPrimary: newRole || 'Должность',
-        inputSecondary: newName || 'Новый сотрудник',
-        name: newName || 'Новый сотрудник',
-        role: newRole || 'Должность',
+        inputPrimary: newPrimary || 'Новый сотрудник',
+        inputSecondary: newSecondary || 'Должность',
       });
       setIsPopoverOpen(false);
-      setNewName('');
-      setNewRole('');
+      setNewPrimary('');
+      setNewSecondary('');
     } catch (error) {
       console.error('Error adding staff:', error);
     }
@@ -55,13 +51,13 @@ export const AddCardButton: React.FC<AddCardButtonProps> = ({
       <PopoverContent className="w-80">
         <div className="flex flex-col gap-2">
           <Input
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
+            value={newPrimary}
+            onChange={(e) => setNewPrimary(e.target.value)}
             placeholder={inputPrimary}
           />
           <Input
-            value={newRole}
-            onChange={(e) => setNewRole(e.target.value)}
+            value={newSecondary}
+            onChange={(e) => setNewSecondary(e.target.value)}
             placeholder={inputSecondary}
           />
           <Button onClick={handleSave} size="sm">

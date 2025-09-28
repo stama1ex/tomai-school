@@ -8,9 +8,7 @@ export const createCrudHandlers = (tableName: string) => {
 
   const GET = async () => {
     try {
-      const result = await sql.query(
-        `SELECT * FROM ${tableName} ORDER BY "order" ASC`
-      );
+      const result = await sql.query(`SELECT * FROM ${tableName}`);
       return NextResponse.json(extractData(result));
     } catch (e) {
       console.error(e);
@@ -49,10 +47,8 @@ export const createCrudHandlers = (tableName: string) => {
   const PUT = async (req: Request) => {
     const body = await req.json();
 
-    // Проверяем, является ли запрос обновлением порядка
     if (body.items) {
       try {
-        // Используем транзакцию для обновления порядка
         await sql.query('BEGIN');
         for (const { id, order } of body.items) {
           const result = await sql.query(
@@ -79,7 +75,6 @@ export const createCrudHandlers = (tableName: string) => {
       }
     }
 
-    // Обычное обновление записи
     const { id, newData } = body;
     const keys = Object.keys(newData);
     const values = Object.values(newData);

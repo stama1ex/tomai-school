@@ -37,7 +37,7 @@ export const Card: React.FC<CardItem> = ({
         primaryText: newPrimary,
         secondaryText: newSecondary,
       });
-      setIsPopoverOpen(false); // Close Popover after saving
+      setIsPopoverOpen(false);
     } catch (error) {
       console.error('Error updating staff:', error);
     }
@@ -45,7 +45,10 @@ export const Card: React.FC<CardItem> = ({
 
   return (
     <div
-      className={cn(className, 'relative bg-background p-4 rounded-lg border')}
+      className={cn(
+        className,
+        'relative bg-background p-4 rounded-lg border max-w-sm w-full'
+      )}
     >
       {isAdmin && (
         <div className="absolute top-2 right-2 flex gap-2 z-10">
@@ -59,14 +62,14 @@ export const Card: React.FC<CardItem> = ({
               <div className="flex flex-col gap-2">
                 <input
                   type="text"
-                  placeholder="Имя"
+                  placeholder="ФИО"
                   value={newPrimary}
                   onChange={(e) => setNewPrimary(e.target.value)}
                   className="border rounded p-2 text-sm"
                 />
                 <input
                   type="text"
-                  placeholder="Должность"
+                  placeholder="Должность или класс"
                   value={newSecondary}
                   onChange={(e) => setNewSecondary(e.target.value)}
                   className="border rounded p-2 text-sm"
@@ -89,14 +92,16 @@ export const Card: React.FC<CardItem> = ({
         </div>
       )}
 
-      <h3 className="text-lg font-semibold text-primary mb-2">
-        {newPrimary ||
-          (isAdmin ? <i className="text-primary/50">Без названия</i> : '')}
-      </h3>
-      <p className="text-primary/80">
-        {newSecondary ||
-          (isAdmin ? <i className="text-primary/50">Без описания</i> : '')}
-      </p>
+      <div className="pr-16">
+        <h3 className="text-lg font-semibold text-primary mb-2 break-words">
+          {newPrimary ||
+            (isAdmin ? <i className="text-primary/50">Без названия</i> : '')}
+        </h3>
+        <p className="text-primary/80 break-words">
+          {newSecondary ||
+            (isAdmin ? <i className="text-primary/50">Без описания</i> : '')}
+        </p>
+      </div>
     </div>
   );
 };
