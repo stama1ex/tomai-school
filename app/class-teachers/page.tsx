@@ -1,12 +1,14 @@
 import { CrudTable } from '@/components/shared/crud-table';
 
-export default function ClassTeachersPage() {
+export default function ClassTeachers() {
   return (
     <CrudTable
       apiPath="/api/class-teachers"
       title="Классные руководители"
-      primaryLabel="class_id"
-      secondaryLabel="name"
+      primaryLabel="name"
+      secondaryLabel="class_id"
+      primaryLabelDisplay="ФИО"
+      secondaryLabelDisplay="Класс"
     />
   );
 }
