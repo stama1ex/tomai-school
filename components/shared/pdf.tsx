@@ -86,8 +86,8 @@ export const Pdf: React.FC<PdfItem> = ({
             </PopoverContent>
           </Popover>
 
-          <Button size="icon" variant="destructive" onClick={onDelete}>
-            <Trash className="h-4 w-4" />
+          <Button size="icon" variant="outline" onClick={onDelete}>
+            <Trash className="h-4 w-4 text-destructive" />
           </Button>
         </div>
       )}
