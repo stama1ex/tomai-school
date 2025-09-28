@@ -10,13 +10,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 interface AddCardButtonProps {
-  onAdd: (newData: {
-    inputPrimary: string;
-    inputSecondary: string;
-  }) => Promise<void>;
+  onAdd: (
+    newData: { inputPrimary: string; inputSecondary: string },
+    setIsPopoverOpen: (open: boolean) => void
+  ) => Promise<void>;
   placeholder?: ReactNode;
   inputPrimary: string;
   inputSecondary: string;
+  className?: string;
 }
 
 export const AddCardButton: React.FC<AddCardButtonProps> = ({
@@ -24,6 +25,7 @@ export const AddCardButton: React.FC<AddCardButtonProps> = ({
   placeholder,
   inputPrimary,
   inputSecondary,
+  className,
 }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [newPrimary, setNewPrimary] = useState('');
@@ -31,22 +33,24 @@ export const AddCardButton: React.FC<AddCardButtonProps> = ({
 
   const handleSave = async () => {
     try {
-      await onAdd({
-        inputPrimary: newPrimary || 'Новый сотрудник',
-        inputSecondary: newSecondary || 'Должность',
-      });
-      setIsPopoverOpen(false);
-      setNewPrimary('');
-      setNewSecondary('');
+      await onAdd(
+        {
+          inputPrimary: newPrimary || 'Новый документ',
+          inputSecondary: newSecondary || '',
+        },
+        setIsPopoverOpen
+      );
     } catch (error) {
-      console.error('Error adding staff:', error);
+      console.error('Error adding document:', error);
     }
   };
 
   return (
     <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
       <PopoverTrigger asChild>
-        <Button>{placeholder || 'Добавить карточку'}</Button>
+        <Button className={className}>
+          {placeholder || 'Добавить документ'}
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="flex flex-col gap-2">

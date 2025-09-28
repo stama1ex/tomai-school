@@ -3,6 +3,8 @@ dotenv.config({ path: '.env.local' });
 
 import { sql } from '@vercel/postgres';
 import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
+import path from 'path';
 
 console.log('DATABASE_URL:', process.env.DATABASE_URL);
 console.log('POSTGRES_URL:', process.env.POSTGRES_URL);
@@ -13,9 +15,31 @@ if (!connectionString) {
   throw new Error('❌ Нет DATABASE_URL или POSTGRES_URL в .env.local');
 }
 
+function loadJson(file: string) {
+  const filePath = path.join(process.cwd(), 'data', file);
+  if (!fs.existsSync(filePath)) {
+    console.warn(`⚠️ Файл ${file} не найден`);
+    return [];
+  }
+
+  const content = fs.readFileSync(filePath, 'utf-8').trim();
+  if (!content) {
+    console.warn(`⚠️ Файл ${file} пустой`);
+    return [];
+  }
+
+  try {
+    return JSON.parse(content);
+  } catch (e) {
+    console.error(`❌ Ошибка парсинга ${file}:`, e);
+    return [];
+  }
+}
+
 async function seed() {
   try {
     console.log('Создание таблиц...');
+
     await sql`
       CREATE TABLE IF NOT EXISTS staffing (
         id UUID PRIMARY KEY,
@@ -24,8 +48,6 @@ async function seed() {
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
-    console.log('Таблица staffing создана');
-
     await sql`
       CREATE TABLE IF NOT EXISTS class_teachers (
         id UUID PRIMARY KEY,
@@ -34,50 +56,159 @@ async function seed() {
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
-    console.log('Таблица class_teachers создана');
+    await sql`
+      CREATE TABLE IF NOT EXISTS reports (
+        id UUID PRIMARY KEY,
+        title TEXT NOT NULL,
+        pdf_url TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS plans (
+        id UUID PRIMARY KEY,
+        title TEXT NOT NULL,
+        pdf_url TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS charter (
+        id UUID PRIMARY KEY,
+        title TEXT NOT NULL,
+        pdf_url TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS budget (
+        id UUID PRIMARY KEY,
+        title TEXT NOT NULL,
+        pdf_url TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS first_grade_admission (
+        id UUID PRIMARY KEY,
+        title TEXT NOT NULL,
+        pdf_url TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS lessons_schedule (
+        id UUID PRIMARY KEY,
+        title TEXT NOT NULL,
+        pdf_url TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
 
     console.log('Очистка таблиц...');
     await sql`DELETE FROM staffing`;
     await sql`DELETE FROM class_teachers`;
-    console.log('Таблицы очищены');
+    await sql`DELETE FROM reports`;
+    await sql`DELETE FROM plans`;
+    await sql`DELETE FROM charter`;
+    await sql`DELETE FROM budget`;
+    await sql`DELETE FROM first_grade_admission`;
+    await sql`DELETE FROM lessons_schedule`;
 
-    const staff = [
-      { full_name: 'Иванов Иван Иванович', position: 'Директор' },
-      {
-        full_name: 'Петрова Мария Сергеевна',
-        position: 'Заместитель директора',
-      },
-      { full_name: 'Сидоров Алексей Павлович', position: 'Учитель математики' },
-    ];
+    console.log('Заполнение таблиц...');
 
-    console.log('Вставка данных в staffing...');
+    // Staffing
+    const staff = loadJson('staffing.json');
     for (const s of staff) {
-      await sql`
-        INSERT INTO staffing (id, full_name, position)
-        VALUES (${uuidv4()}, ${s.full_name}, ${s.position})
-      `;
+      if (s.name && s.role) {
+        await sql`
+          INSERT INTO staffing (id, full_name, position)
+          VALUES (${uuidv4()}, ${s.name}, ${s.role})
+        `;
+      }
     }
-    console.log('Данные в staffing вставлены');
 
-    const teachers = [
-      { name: 'Анна Кузнецова', class_id: '5А' },
-      { name: 'Дмитрий Смирнов', class_id: '6Б' },
-      { name: 'Ольга Попова', class_id: '7В' },
-    ];
-
-    console.log('Вставка данных в class_teachers...');
+    // Class teachers
+    const teachers = loadJson('class-teachers.json');
     for (const t of teachers) {
-      await sql`
-        INSERT INTO class_teachers (id, name, class_id)
-        VALUES (${uuidv4()}, ${t.name}, ${t.class_id})
-      `;
+      if (t.name && t.class) {
+        await sql`
+          INSERT INTO class_teachers (id, name, class_id)
+          VALUES (${uuidv4()}, ${t.name}, ${t.class})
+        `;
+      }
     }
-    console.log('Данные в class_teachers вставлены');
+
+    // Reports
+    const reports = loadJson('reports.json');
+    for (const r of reports) {
+      if (r.title && r.pdf_url) {
+        await sql`
+          INSERT INTO reports (id, title, pdf_url)
+          VALUES (${uuidv4()}, ${r.title}, ${r.pdf_url})
+        `;
+      }
+    }
+
+    // Plans
+    const plans = loadJson('plans.json');
+    for (const p of plans) {
+      if (p.title && p.pdf_url) {
+        await sql`
+          INSERT INTO plans (id, title, pdf_url)
+          VALUES (${uuidv4()}, ${p.title}, ${p.pdf_url})
+        `;
+      }
+    }
+
+    // Charter
+    const charter = loadJson('charter.json');
+    for (const c of charter) {
+      if (c.title && c.pdf_url) {
+        await sql`
+          INSERT INTO charter (id, title, pdf_url)
+          VALUES (${uuidv4()}, ${c.title}, ${c.pdf_url})
+        `;
+      }
+    }
+
+    // Budget
+    const budget = loadJson('budget.json');
+    for (const b of budget) {
+      if (b.title && b.pdf_url) {
+        await sql`
+          INSERT INTO budget (id, title, pdf_url)
+          VALUES (${uuidv4()}, ${b.title}, ${b.pdf_url})
+        `;
+      }
+    }
+
+    // First Grade Admission
+    const firstGrade = loadJson('first-grade-admission.json');
+    for (const f of firstGrade) {
+      if (f.title && f.pdf_url) {
+        await sql`
+          INSERT INTO first_grade_admission (id, title, pdf_url)
+          VALUES (${uuidv4()}, ${f.title}, ${f.pdf_url})
+        `;
+      }
+    }
+
+    // Lessons Schedule
+    const lessonsSchedule = loadJson('lessons-schedule.json');
+    for (const l of lessonsSchedule) {
+      if (l.title && l.pdf_url) {
+        await sql`
+          INSERT INTO lessons_schedule (id, title, pdf_url)
+          VALUES (${uuidv4()}, ${l.title}, ${l.pdf_url})
+        `;
+      }
+    }
 
     console.log('✅ Сиды успешно загружены в Neon!');
     process.exit(0);
-  } catch (err) {
-    console.error('❌ Ошибка при сидировании:', err);
+  } catch (e) {
+    console.error('❌ Ошибка при сидировании:', e);
     process.exit(1);
   }
 }

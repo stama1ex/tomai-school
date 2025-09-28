@@ -11,11 +11,20 @@ import { Button } from '@/components/ui/button';
 import { Pencil, Trash } from 'lucide-react';
 import { useAdminStore } from '@/store/admin';
 
+interface PdfDocument {
+  id: string;
+  title: string;
+  pdfUrl: string;
+}
+
 interface PdfItem {
   className?: string;
   url: string;
   title?: string;
-  onEdit?: (newData: { title?: string; url: string }) => void;
+  onEdit?: (
+    newData: PdfDocument,
+    setIsPopoverOpen: (open: boolean) => void
+  ) => void;
   onDelete?: () => void;
 }
 
@@ -28,13 +37,27 @@ export const Pdf: React.FC<PdfItem> = ({
 }) => {
   const isAdmin = useAdminStore((s) => s.isAdmin);
   const [newTitle, setNewTitle] = useState(title || '');
-  const [newUrl, setNewUrl] = useState(url);
+  const [newPdfUrl, setNewPdfUrl] = useState(url);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const handleSave = async () => {
+    try {
+      const newData: PdfDocument = {
+        id: '',
+        title: newTitle,
+        pdfUrl: newPdfUrl,
+      };
+      onEdit?.(newData, setIsPopoverOpen);
+    } catch (error) {
+      console.error('Error updating document:', error);
+    }
+  };
 
   return (
     <div className={cn(className, 'relative')}>
       {isAdmin && (
         <div className="absolute top-2 right-2 flex gap-2 z-5">
-          <Popover>
+          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
               <Button size="icon" variant="outline">
                 <Pencil className="h-4 w-4" />
@@ -52,14 +75,11 @@ export const Pdf: React.FC<PdfItem> = ({
                 <input
                   type="text"
                   placeholder="URL (обязательно /preview)"
-                  value={newUrl}
-                  onChange={(e) => setNewUrl(e.target.value)}
+                  value={newPdfUrl}
+                  onChange={(e) => setNewPdfUrl(e.target.value)}
                   className="border rounded p-2 text-sm"
                 />
-                <Button
-                  onClick={() => onEdit?.({ title: newTitle, url: newUrl })}
-                  size="sm"
-                >
+                <Button onClick={handleSave} size="sm">
                   Сохранить
                 </Button>
               </div>
