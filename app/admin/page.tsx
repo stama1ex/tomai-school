@@ -22,7 +22,7 @@ export default function AdminLogin() {
 
     const success = await adminLogin(login, password);
     if (success) {
-      router.push('/'); // Redirect to homepage or admin dashboard after login
+      router.push('/');
     } else {
       setError('Неверный логин или пароль');
     }
