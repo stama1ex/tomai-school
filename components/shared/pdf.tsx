@@ -105,7 +105,7 @@ export const Pdf: React.FC<PdfItem> = ({
       )}
 
       <div className="flex justify-center">
-        <iframe src={url} className="w-full h-[80vh] md:h-[60vh]"></iframe>
+        <iframe src={url} className="w-full h-[50vh] md:h-[70vh]"></iframe>
       </div>
     </div>
   );
