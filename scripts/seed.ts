@@ -40,6 +40,35 @@ async function seed() {
   try {
     console.log('Создание таблиц...');
 
+    // Удаляем старую таблицу exams
+    await sql`DROP TABLE IF EXISTS exams`;
+
+    // Создаем новые таблицы
+    await sql`
+      CREATE TABLE IF NOT EXISTS primary_exams (
+        id UUID PRIMARY KEY,
+        subject TEXT NOT NULL,
+        date TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS graduation_exams (
+        id UUID PRIMARY KEY,
+        subject TEXT NOT NULL,
+        date TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS call_schedule (
+        id UUID PRIMARY KEY,
+        lesson INT NOT NULL,
+        time TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+    // Остальные таблицы остаются без изменений
     await sql`
       CREATE TABLE IF NOT EXISTS staffing (
         id UUID PRIMARY KEY,
@@ -106,6 +135,9 @@ async function seed() {
     `;
 
     console.log('Очистка таблиц...');
+    await sql`DELETE FROM primary_exams`;
+    await sql`DELETE FROM graduation_exams`;
+    await sql`DELETE FROM call_schedule`;
     await sql`DELETE FROM staffing`;
     await sql`DELETE FROM class_teachers`;
     await sql`DELETE FROM reports`;
@@ -116,6 +148,35 @@ async function seed() {
     await sql`DELETE FROM lessons_schedule`;
 
     console.log('Заполнение таблиц...');
+
+    // Primary Exams и Graduation Exams
+    const exams = loadJson('exams.json');
+    for (const e of exams) {
+      if (e.subject && e.date && e.type) {
+        if (e.type === 'primary') {
+          await sql`
+            INSERT INTO primary_exams (id, subject, date)
+            VALUES (${uuidv4()}, ${e.subject}, ${e.date})
+          `;
+        } else if (e.type === 'graduation') {
+          await sql`
+            INSERT INTO graduation_exams (id, subject, date)
+            VALUES (${uuidv4()}, ${e.subject}, ${e.date})
+          `;
+        }
+      }
+    }
+
+    // Call Schedule
+    const calls = loadJson('call-schedule.json');
+    for (const c of calls) {
+      if (c.lesson && c.time) {
+        await sql`
+          INSERT INTO call_schedule (id, lesson, time)
+          VALUES (${uuidv4()}, ${c.lesson}, ${c.time})
+        `;
+      }
+    }
 
     // Staffing
     const staff = loadJson('staffing.json');
