@@ -13,10 +13,7 @@ export default function FirstGradeAdmission() {
         className="mb-8"
       />
       <Container className="px-4 py-8">
-        <PdfCrud
-          apiPath="/api/first-grade-admission"
-          title="Прием в первый класс"
-        />
+        <PdfCrud apiPath="/api/first-grade-admission" />
       </Container>
     </>
   );

@@ -194,7 +194,7 @@ export default function RegulationsOnAssessment() {
             ситуацию учащихся, согласно данного регламента;
           </p>
 
-          <h1 className="text-3xl font-bold dark:text-white mt-8 mb-4">
+          <h1 className="text-3xl font-bold dark:text-white mt-8 mb-4 break-words">
             ГЛАВА II. ОЦЕНИВАНИЕ УЧАЩИХСЯ. РАСЧЕТ СРЕДНЕСЕМЕСТРОВЫХ/
             ГОДОВЫХ/ИТОГОВЫХ ОЦЕНОК
           </h1>

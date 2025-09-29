@@ -9,7 +9,7 @@ export default function Plans() {
     <>
       <Banner image="/background.jpg" title="Планы" className="mb-8" />
       <Container className="px-4 py-8">
-        <PdfCrud apiPath="/api/plans" title="Планы" />
+        <PdfCrud apiPath="/api/plans" />
       </Container>
     </>
   );

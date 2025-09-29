@@ -45,7 +45,7 @@ export const Banner: React.FC<Props> = ({ className, image, title }) => {
           />
           <Title
             text={title}
-            size="xl"
+            size="lg"
             className="text-white font-bold md:hidden"
           />
         </div>
