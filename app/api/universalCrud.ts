@@ -8,7 +8,9 @@ export const createCrudHandlers = (tableName: string) => {
 
   const GET = async () => {
     try {
-      const result = await sql.query(`SELECT * FROM ${tableName}`);
+      const result = await sql.query(
+        `SELECT * FROM ${tableName} ORDER BY "order" ASC`
+      );
       return NextResponse.json(extractData(result));
     } catch (e) {
       console.error(e);
@@ -23,9 +25,20 @@ export const createCrudHandlers = (tableName: string) => {
     const body = await req.json();
     const id = body.id || uuidv4();
 
-    const keys = ['id', ...Object.keys(body).filter((k) => k !== 'id')];
+    const maxOrderResult = await sql.query(
+      `SELECT MAX("order") as max_order FROM ${tableName}`
+    );
+    const maxOrder = maxOrderResult.rows[0]?.max_order || 0;
+    const newOrder = maxOrder + 1;
+
+    const keys = [
+      'id',
+      '"order"',
+      ...Object.keys(body).filter((k) => k !== 'id'),
+    ];
     const values = [
       id,
+      newOrder,
       ...Object.values(body).filter((_, i) => Object.keys(body)[i] !== 'id'),
     ];
 
@@ -75,10 +88,26 @@ export const createCrudHandlers = (tableName: string) => {
       }
     }
 
-    const { id, newData } = body;
-    const keys = Object.keys(newData);
-    const values = Object.values(newData);
-    const setString = keys.map((k, i) => `${k} = $${i + 1}`).join(', ');
+    const { id, newData, ...rest } = body;
+    const dataToUpdate = newData || rest;
+
+    if (!id || !Object.keys(dataToUpdate).length) {
+      return NextResponse.json(
+        { error: 'Invalid update payload' },
+        { status: 400 }
+      );
+    }
+
+    const excludedFields = ['id', 'created_at', 'order'];
+    Object.keys(dataToUpdate).forEach((key) => {
+      if (excludedFields.includes(key)) {
+        delete dataToUpdate[key];
+      }
+    });
+
+    const keys = Object.keys(dataToUpdate);
+    const values = Object.values(dataToUpdate);
+    const setString = keys.map((k, i) => `"${k}" = $${i + 1}`).join(', ');
 
     try {
       const result = await sql.query(
@@ -90,7 +119,7 @@ export const createCrudHandlers = (tableName: string) => {
       if (result.rowCount === 0) {
         return NextResponse.json({ error: 'Not found' }, { status: 404 });
       }
-      return NextResponse.json({ success: true });
+      return NextResponse.json(result.rows[0]);
     } catch (e) {
       console.error(e);
       return NextResponse.json({ error: 'Failed to update' }, { status: 500 });

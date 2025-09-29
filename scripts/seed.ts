@@ -43,12 +43,13 @@ async function seed() {
     // Удаляем старую таблицу exams
     await sql`DROP TABLE IF EXISTS exams`;
 
-    // Создаем новые таблицы
+    // Создаем таблицы с полем order
     await sql`
       CREATE TABLE IF NOT EXISTS primary_exams (
         id UUID PRIMARY KEY,
         subject TEXT NOT NULL,
         date TEXT NOT NULL,
+        "order" INT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
@@ -57,6 +58,7 @@ async function seed() {
         id UUID PRIMARY KEY,
         subject TEXT NOT NULL,
         date TEXT NOT NULL,
+        "order" INT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
@@ -65,15 +67,16 @@ async function seed() {
         id UUID PRIMARY KEY,
         lesson INT NOT NULL,
         time TEXT NOT NULL,
+        "order" INT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
-    // Остальные таблицы остаются без изменений
     await sql`
       CREATE TABLE IF NOT EXISTS staffing (
         id UUID PRIMARY KEY,
         full_name TEXT NOT NULL,
         position TEXT NOT NULL,
+        "order" INT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
@@ -82,6 +85,7 @@ async function seed() {
         id UUID PRIMARY KEY,
         name TEXT NOT NULL,
         class_id TEXT NOT NULL,
+        "order" INT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
@@ -90,6 +94,7 @@ async function seed() {
         id UUID PRIMARY KEY,
         title TEXT NOT NULL,
         pdf_url TEXT NOT NULL,
+        "order" INT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
@@ -98,6 +103,7 @@ async function seed() {
         id UUID PRIMARY KEY,
         title TEXT NOT NULL,
         pdf_url TEXT NOT NULL,
+        "order" INT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
@@ -106,6 +112,7 @@ async function seed() {
         id UUID PRIMARY KEY,
         title TEXT NOT NULL,
         pdf_url TEXT NOT NULL,
+        "order" INT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
@@ -114,6 +121,7 @@ async function seed() {
         id UUID PRIMARY KEY,
         title TEXT NOT NULL,
         pdf_url TEXT NOT NULL,
+        "order" INT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
@@ -122,6 +130,7 @@ async function seed() {
         id UUID PRIMARY KEY,
         title TEXT NOT NULL,
         pdf_url TEXT NOT NULL,
+        "order" INT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
@@ -130,6 +139,7 @@ async function seed() {
         id UUID PRIMARY KEY,
         title TEXT NOT NULL,
         pdf_url TEXT NOT NULL,
+        "order" INT NOT NULL,
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
@@ -151,17 +161,19 @@ async function seed() {
 
     // Primary Exams и Graduation Exams
     const exams = loadJson('exams.json');
+    let primaryOrder = 1;
+    let graduationOrder = 1;
     for (const e of exams) {
       if (e.subject && e.date && e.type) {
         if (e.type === 'primary') {
           await sql`
-            INSERT INTO primary_exams (id, subject, date)
-            VALUES (${uuidv4()}, ${e.subject}, ${e.date})
+            INSERT INTO primary_exams (id, subject, date, "order")
+            VALUES (${uuidv4()}, ${e.subject}, ${e.date}, ${primaryOrder++})
           `;
         } else if (e.type === 'graduation') {
           await sql`
-            INSERT INTO graduation_exams (id, subject, date)
-            VALUES (${uuidv4()}, ${e.subject}, ${e.date})
+            INSERT INTO graduation_exams (id, subject, date, "order")
+            VALUES (${uuidv4()}, ${e.subject}, ${e.date}, ${graduationOrder++})
           `;
         }
       }
@@ -169,99 +181,110 @@ async function seed() {
 
     // Call Schedule
     const calls = loadJson('call-schedule.json');
+    let callOrder = 1;
     for (const c of calls) {
       if (c.lesson && c.time) {
         await sql`
-          INSERT INTO call_schedule (id, lesson, time)
-          VALUES (${uuidv4()}, ${c.lesson}, ${c.time})
+          INSERT INTO call_schedule (id, lesson, time, "order")
+          VALUES (${uuidv4()}, ${c.lesson}, ${c.time}, ${callOrder++})
         `;
       }
     }
 
     // Staffing
     const staff = loadJson('staffing.json');
+    let staffOrder = 1;
     for (const s of staff) {
       if (s.name && s.role) {
         await sql`
-          INSERT INTO staffing (id, full_name, position)
-          VALUES (${uuidv4()}, ${s.name}, ${s.role})
+          INSERT INTO staffing (id, full_name, position, "order")
+          VALUES (${uuidv4()}, ${s.name}, ${s.role}, ${staffOrder++})
         `;
       }
     }
 
     // Class teachers
     const teachers = loadJson('class-teachers.json');
+    let teacherOrder = 1;
     for (const t of teachers) {
       if (t.name && t.class) {
         await sql`
-          INSERT INTO class_teachers (id, name, class_id)
-          VALUES (${uuidv4()}, ${t.name}, ${t.class})
+          INSERT INTO class_teachers (id, name, class_id, "order")
+          VALUES (${uuidv4()}, ${t.name}, ${t.class}, ${teacherOrder++})
         `;
       }
     }
 
     // Reports
     const reports = loadJson('reports.json');
+    let reportOrder = 1;
     for (const r of reports) {
       if (r.title && r.pdf_url) {
         await sql`
-          INSERT INTO reports (id, title, pdf_url)
-          VALUES (${uuidv4()}, ${r.title}, ${r.pdf_url})
+          INSERT INTO reports (id, title, pdf_url, "order")
+          VALUES (${uuidv4()}, ${r.title}, ${r.pdf_url}, ${reportOrder++})
         `;
       }
     }
 
     // Plans
     const plans = loadJson('plans.json');
+    let planOrder = 1;
     for (const p of plans) {
       if (p.title && p.pdf_url) {
         await sql`
-          INSERT INTO plans (id, title, pdf_url)
-          VALUES (${uuidv4()}, ${p.title}, ${p.pdf_url})
+          INSERT INTO plans (id, title, pdf_url, "order")
+          VALUES (${uuidv4()}, ${p.title}, ${p.pdf_url}, ${planOrder++})
         `;
       }
     }
 
     // Charter
     const charter = loadJson('charter.json');
+    let charterOrder = 1;
     for (const c of charter) {
       if (c.title && c.pdf_url) {
         await sql`
-          INSERT INTO charter (id, title, pdf_url)
-          VALUES (${uuidv4()}, ${c.title}, ${c.pdf_url})
+          INSERT INTO charter (id, title, pdf_url, "order")
+          VALUES (${uuidv4()}, ${c.title}, ${c.pdf_url}, ${charterOrder++})
         `;
       }
     }
 
     // Budget
     const budget = loadJson('budget.json');
+    let budgetOrder = 1;
     for (const b of budget) {
       if (b.title && b.pdf_url) {
         await sql`
-          INSERT INTO budget (id, title, pdf_url)
-          VALUES (${uuidv4()}, ${b.title}, ${b.pdf_url})
+          INSERT INTO budget (id, title, pdf_url, "order")
+          VALUES (${uuidv4()}, ${b.title}, ${b.pdf_url}, ${budgetOrder++})
         `;
       }
     }
 
     // First Grade Admission
     const firstGrade = loadJson('first-grade-admission.json');
+    let firstGradeOrder = 1;
     for (const f of firstGrade) {
       if (f.title && f.pdf_url) {
         await sql`
-          INSERT INTO first_grade_admission (id, title, pdf_url)
-          VALUES (${uuidv4()}, ${f.title}, ${f.pdf_url})
+          INSERT INTO first_grade_admission (id, title, pdf_url, "order")
+          VALUES (${uuidv4()}, ${f.title}, ${f.pdf_url}, ${firstGradeOrder++})
         `;
       }
     }
 
     // Lessons Schedule
     const lessonsSchedule = loadJson('lessons-schedule.json');
+    let lessonsScheduleOrder = 1;
     for (const l of lessonsSchedule) {
       if (l.title && l.pdf_url) {
         await sql`
-          INSERT INTO lessons_schedule (id, title, pdf_url)
-          VALUES (${uuidv4()}, ${l.title}, ${l.pdf_url})
+          INSERT INTO lessons_schedule (id, title, pdf_url, "order")
+          VALUES (${uuidv4()}, ${l.title}, ${
+          l.pdf_url
+        }, ${lessonsScheduleOrder++})
         `;
       }
     }
