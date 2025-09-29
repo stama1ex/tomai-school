@@ -1,14 +1,14 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Title } from './title';
 
 interface Props {
   className?: string;
   image: string;
-  title: string;
+  title: ReactNode;
 }
 
 export const Banner: React.FC<Props> = ({ className, image, title }) => {

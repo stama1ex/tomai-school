@@ -3,8 +3,8 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/shared/header';
 import { ThemeProvider } from '@/components/shared/theme-provider';
-import { Toaster } from 'sonner';
 import NextTopLoader from 'nextjs-toploader';
+import { Toaster } from '@/components/ui/sonner';
 
 const inter = Inter({
   variable: '--font-inter',

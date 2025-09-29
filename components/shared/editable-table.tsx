@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
@@ -6,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAdminStore } from '@/store/admin';
-import { toast } from 'sonner'; // Импортируем sonner
+import { toast } from 'sonner';
 
 export interface Column<T> {
   key: keyof T | 'index';
@@ -43,7 +44,7 @@ export function EditableTable<T extends { id?: string }>({
           const result = await response.json();
           setRows(result);
         } catch (error) {
-          toast.error('Не удалось загрузить данные'); // Заменяем console.error
+          toast.error('Не удалось загрузить данные');
         } finally {
           setLoading(false);
         }
@@ -86,10 +87,10 @@ export function EditableTable<T extends { id?: string }>({
         if (!response.ok) {
           throw new Error('Ошибка при сохранении');
         }
-        toast.success('Обновлено!'); // Успешное сохранение
+        toast.success('Обновлено!');
       }
     } catch (error) {
-      toast.error('Ошибка при обновлении'); // Ошибка сохранения
+      toast.error('Ошибка при обновлении');
     }
   };
 

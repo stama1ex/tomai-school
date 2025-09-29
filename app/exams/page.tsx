@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react';
 import { Banner } from '@/components/shared/banner';
 import { Container } from '@/components/shared/container';
+import { EditableTitle } from '@/components/shared/editable-title';
 import { EditableTable } from '@/components/shared/editable-table';
-import { Title } from '@/components/shared/title';
+import { EditableYear } from '@/components/shared/editable-year'; // Новый компонент
 
 export default function Exams() {
   const [primaryData, setPrimaryData] = useState([]);
   const [graduationData, setGraduationData] = useState([]);
+  const [bannerTitle, setBannerTitle] = useState('Экзамены - 2025'); // Дефолт
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function Exams() {
       <>
         <Banner
           image="/background.jpg"
-          title="Экзамены - 2025"
+          title={bannerTitle}
           className="mb-4 sm:mb-8"
         />
         <div className="flex justify-center my-auto ">
@@ -57,12 +59,18 @@ export default function Exams() {
     <>
       <Banner
         image="/background.jpg"
-        title="Экзамены - 2025"
+        title={
+          <EditableYear
+            apiPath="/api/exam-year"
+            onYearChange={(newYear) => setBannerTitle(`Экзамены - ${newYear}`)}
+          />
+        }
         className="mb-4 sm:mb-8"
       />
       <Container className="px-4 py-6 sm:py-8">
-        <Title
-          text="График национальных экзаменов в начальном образовании на 2023-2024 уч.г."
+        <EditableTitle
+          apiPath="/api/exam-titles"
+          type="primary"
           size="md"
           className="dark:text-white font-bold text-center mb-6"
         />
@@ -81,8 +89,9 @@ export default function Exams() {
             className="mb-8"
           />
         )}
-        <Title
-          text="График национальных выпускных экзаменов за гимназический цикл на 2023-2024 уч.г."
+        <EditableTitle
+          apiPath="/api/exam-titles"
+          type="graduation"
           size="md"
           className="dark:text-white font-bold text-center mb-6"
         />

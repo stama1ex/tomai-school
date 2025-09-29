@@ -143,6 +143,23 @@ async function seed() {
         created_at TIMESTAMP DEFAULT NOW()
       )
     `;
+    await sql`
+  CREATE TABLE IF NOT EXISTS exam_titles (
+    id UUID PRIMARY KEY,
+    type TEXT NOT NULL,
+    text TEXT NOT NULL,
+    "order" INT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+  )
+`;
+    await sql`
+  CREATE TABLE IF NOT EXISTS exam_year (
+    id UUID PRIMARY KEY,
+    year TEXT NOT NULL,
+    "order" INT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+  )
+`;
 
     console.log('Очистка таблиц...');
     await sql`DELETE FROM primary_exams`;
@@ -156,6 +173,8 @@ async function seed() {
     await sql`DELETE FROM budget`;
     await sql`DELETE FROM first_grade_admission`;
     await sql`DELETE FROM lessons_schedule`;
+    await sql`DELETE FROM exam_titles`;
+    await sql`DELETE FROM exam_year`;
 
     console.log('Заполнение таблиц...');
 
@@ -286,6 +305,26 @@ async function seed() {
           l.pdf_url
         }, ${lessonsScheduleOrder++})
         `;
+      }
+    }
+    const titles = loadJson('exam-titles.json');
+    let titleOrder = 1;
+    for (const t of titles) {
+      if (t.type && t.text) {
+        await sql`
+      INSERT INTO exam_titles (id, type, text, "order")
+      VALUES (${uuidv4()}, ${t.type}, ${t.text}, ${titleOrder++})
+    `;
+      }
+    }
+    const years = loadJson('exam-year.json');
+    let yearOrder = 1;
+    for (const y of years) {
+      if (y.year) {
+        await sql`
+      INSERT INTO exam_year (id, year, "order")
+      VALUES (${uuidv4()}, ${y.year}, ${yearOrder++})
+    `;
       }
     }
 

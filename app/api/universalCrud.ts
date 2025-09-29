@@ -6,10 +6,17 @@ import { v4 as uuidv4 } from 'uuid';
 export const createCrudHandlers = (tableName: string) => {
   const extractData = (result: any) => result.rows;
 
-  const GET = async () => {
+  // ✅ GET: сортировка по order, с поддержкой ?type= для фильтра
+  const GET = async (req: Request) => {
+    const url = new URL(req.url);
+    const type = url.searchParams.get('type');
+    const whereClause = type ? ` WHERE "type" = $1` : '';
+    const params = type ? [type] : [];
+
     try {
       const result = await sql.query(
-        `SELECT * FROM ${tableName} ORDER BY "order" ASC`
+        `SELECT * FROM ${tableName}${whereClause} ORDER BY "order" ASC`,
+        params
       );
       return NextResponse.json(extractData(result));
     } catch (e) {
@@ -21,6 +28,7 @@ export const createCrudHandlers = (tableName: string) => {
     }
   };
 
+  // ✅ POST: создание записи
   const POST = async (req: Request) => {
     const body = await req.json();
     const id = body.id || uuidv4();
@@ -57,9 +65,11 @@ export const createCrudHandlers = (tableName: string) => {
     }
   };
 
+  // ✅ PUT: поддержка { id, newData: {...} } и { id, field1: value1 }
   const PUT = async (req: Request) => {
     const body = await req.json();
 
+    // Массовое обновление order
     if (body.items) {
       try {
         await sql.query('BEGIN');
@@ -88,6 +98,7 @@ export const createCrudHandlers = (tableName: string) => {
       }
     }
 
+    // Одиночное обновление
     const { id, newData, ...rest } = body;
     const dataToUpdate = newData || rest;
 
@@ -98,6 +109,7 @@ export const createCrudHandlers = (tableName: string) => {
       );
     }
 
+    // Фильтруем системные поля
     const excludedFields = ['id', 'created_at', 'order'];
     Object.keys(dataToUpdate).forEach((key) => {
       if (excludedFields.includes(key)) {
@@ -107,7 +119,7 @@ export const createCrudHandlers = (tableName: string) => {
 
     const keys = Object.keys(dataToUpdate);
     const values = Object.values(dataToUpdate);
-    const setString = keys.map((k, i) => `"${k}" = $${i + 1}`).join(', ');
+    const setString = keys.map((k, i) => `"${k}" = $${i + 1}`).join(', '); // Кавычки для ключей
 
     try {
       const result = await sql.query(
@@ -126,6 +138,7 @@ export const createCrudHandlers = (tableName: string) => {
     }
   };
 
+  // ✅ DELETE
   const DELETE = async (req: Request) => {
     const { id } = await req.json();
     try {
