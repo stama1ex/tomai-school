@@ -17,6 +17,23 @@ import { cn } from '@/lib/utils';
 
 export function NavigationMenuDemo() {
   const pathname = usePathname();
+  const [examYear, setExamYear] = React.useState<string>('2025');
+
+  React.useEffect(() => {
+    const fetchExamYear = async () => {
+      try {
+        const response = await fetch('/api/exam-year');
+        const data = await response.json();
+        if (data && data.length > 0) {
+          setExamYear(data[0].year);
+        }
+      } catch (error) {
+        console.error('Failed to fetch exam year:', error);
+      }
+    };
+
+    fetchExamYear();
+  }, []);
 
   return (
     <NavigationMenu viewport={false}>
@@ -26,7 +43,7 @@ export function NavigationMenuDemo() {
           <NavigationMenuTrigger
             className={cn(
               'dark:bg-transparent',
-              pathname === '/' && 'font-bold dark:text-white'
+              pathname === '/' && 'font-bold dark:text-white',
             )}
           >
             Главная
@@ -39,7 +56,7 @@ export function NavigationMenuDemo() {
                     href="/"
                     className={cn(
                       'relative flex h-full w-full flex-col justify-end rounded-md overflow-hidden select-none focus:shadow-md p-6',
-                      pathname === '/' && 'font-bold'
+                      pathname === '/' && 'font-bold',
                     )}
                   >
                     <div
@@ -60,7 +77,7 @@ export function NavigationMenuDemo() {
                 title="Положение о функционировании"
                 className={cn(
                   pathname === '/regulations-on-functioning' &&
-                    'font-bold bg-muted'
+                    'font-bold bg-muted',
                 )}
               >
                 Документ, регулирующий организацию и работу учебного заведения.
@@ -78,7 +95,7 @@ export function NavigationMenuDemo() {
                 title="Положение об оценивании"
                 className={cn(
                   pathname === '/regulations-on-assessment' &&
-                    'font-bold bg-muted'
+                    'font-bold bg-muted',
                 )}
               >
                 Описание системы контроля знаний и критериев выставления оценок.
@@ -94,7 +111,7 @@ export function NavigationMenuDemo() {
             className={cn(
               navigationMenuTriggerStyle(),
               'dark:bg-transparent',
-              pathname === '/about' && 'font-bold'
+              pathname === '/about' && 'font-bold',
             )}
           >
             <Link href="/about">О школе</Link>
@@ -107,7 +124,7 @@ export function NavigationMenuDemo() {
             className={cn(
               'dark:bg-transparent',
               (pathname === '/staffing' || pathname === '/class-teachers') &&
-                'font-bold'
+                'font-bold',
             )}
           >
             Учителя
@@ -119,7 +136,7 @@ export function NavigationMenuDemo() {
                   <Link
                     href="/staffing"
                     className={cn(
-                      pathname === '/staffing' && 'font-bold bg-muted'
+                      pathname === '/staffing' && 'font-bold bg-muted',
                     )}
                   >
                     Кадровый состав
@@ -129,7 +146,7 @@ export function NavigationMenuDemo() {
                   <Link
                     href="/class-teachers"
                     className={cn(
-                      pathname === '/class-teachers' && 'font-bold bg-muted'
+                      pathname === '/class-teachers' && 'font-bold bg-muted',
                     )}
                   >
                     Классные руководители
@@ -147,7 +164,7 @@ export function NavigationMenuDemo() {
               'dark:bg-transparent',
               (pathname === '/exams' ||
                 pathname === '/first-grade-admission') &&
-                'font-bold'
+                'font-bold',
             )}
           >
             Для родителей
@@ -159,10 +176,10 @@ export function NavigationMenuDemo() {
                   <Link
                     href="/exams"
                     className={cn(
-                      pathname === '/exams' && 'font-bold bg-muted'
+                      pathname === '/exams' && 'font-bold bg-muted',
                     )}
                   >
-                    Экзамены 2025
+                    Экзамены {examYear}
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
@@ -170,7 +187,7 @@ export function NavigationMenuDemo() {
                     href="/first-grade-admission"
                     className={cn(
                       pathname === '/first-grade-admission' &&
-                        'font-bold bg-muted'
+                        'font-bold bg-muted',
                     )}
                   >
                     О приёме в первый класс
@@ -189,7 +206,7 @@ export function NavigationMenuDemo() {
               (pathname === '/lessons-schedule' ||
                 pathname === '/call-schedule' ||
                 pathname === '/plans') &&
-                'font-bold'
+                'font-bold',
             )}
           >
             Планы
@@ -201,7 +218,7 @@ export function NavigationMenuDemo() {
                   <Link
                     href="/lessons-schedule"
                     className={cn(
-                      pathname === '/lessons-schedule' && 'font-bold bg-muted'
+                      pathname === '/lessons-schedule' && 'font-bold bg-muted',
                     )}
                   >
                     Расписание уроков
@@ -211,7 +228,7 @@ export function NavigationMenuDemo() {
                   <Link
                     href="/call-schedule"
                     className={cn(
-                      pathname === '/call-schedule' && 'font-bold bg-muted'
+                      pathname === '/call-schedule' && 'font-bold bg-muted',
                     )}
                   >
                     Расписание звонков
@@ -221,7 +238,7 @@ export function NavigationMenuDemo() {
                   <Link
                     href="/plans"
                     className={cn(
-                      pathname === '/plans' && 'font-bold bg-muted'
+                      pathname === '/plans' && 'font-bold bg-muted',
                     )}
                   >
                     Планы
@@ -237,7 +254,8 @@ export function NavigationMenuDemo() {
           <NavigationMenuTrigger
             className={cn(
               'dark:bg-transparent',
-              (pathname === '/reports' || pathname === '/budget') && 'font-bold'
+              (pathname === '/reports' || pathname === '/budget') &&
+                'font-bold',
             )}
           >
             Отчёты
@@ -249,7 +267,7 @@ export function NavigationMenuDemo() {
                   <Link
                     href="/reports"
                     className={cn(
-                      pathname === '/reports' && 'font-bold bg-muted'
+                      pathname === '/reports' && 'font-bold bg-muted',
                     )}
                   >
                     Отчёты
@@ -259,7 +277,7 @@ export function NavigationMenuDemo() {
                   <Link
                     href="/budget"
                     className={cn(
-                      pathname === '/budget' && 'font-bold bg-muted'
+                      pathname === '/budget' && 'font-bold bg-muted',
                     )}
                   >
                     Бюджет
@@ -277,7 +295,7 @@ export function NavigationMenuDemo() {
             className={cn(
               navigationMenuTriggerStyle(),
               'dark:bg-transparent',
-              pathname === '/contacts' && 'font-bold'
+              pathname === '/contacts' && 'font-bold',
             )}
           >
             <Link href="/contacts">Контакты</Link>

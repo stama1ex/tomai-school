@@ -44,7 +44,7 @@ export function MobileNavMenu() {
                     href="/"
                     className={cn(
                       'block p-2 hover:bg-muted rounded font-medium',
-                      pathname === '/' && 'font-bold bg-muted'
+                      pathname === '/' && 'font-bold bg-muted',
                     )}
                   >
                     На главную страницу
@@ -56,7 +56,7 @@ export function MobileNavMenu() {
                     className={cn(
                       'block p-2 hover:bg-muted rounded',
                       pathname === '/regulations-on-functioning' &&
-                        'font-bold bg-muted'
+                        'font-bold bg-muted',
                     )}
                   >
                     <div className="font-medium">
@@ -73,7 +73,7 @@ export function MobileNavMenu() {
                     href="/charter"
                     className={cn(
                       'block p-2 hover:bg-muted rounded',
-                      pathname === '/charter' && 'font-bold bg-muted'
+                      pathname === '/charter' && 'font-bold bg-muted',
                     )}
                   >
                     <div className="font-medium">Устав учебного заведения</div>
@@ -89,7 +89,7 @@ export function MobileNavMenu() {
                     className={cn(
                       'block p-2 hover:bg-muted rounded',
                       pathname === '/regulations-on-assessment' &&
-                        'font-bold bg-muted'
+                        'font-bold bg-muted',
                     )}
                   >
                     <div className="font-medium">Положение об оценивании</div>
@@ -108,7 +108,7 @@ export function MobileNavMenu() {
             href="/about"
             className={cn(
               'block p-4 hover:bg-muted rounded border-b font-medium text-sm',
-              pathname === '/about' && 'font-bold bg-muted'
+              pathname === '/about' && 'font-bold bg-muted',
             )}
           >
             О школе
@@ -119,7 +119,7 @@ export function MobileNavMenu() {
             <AccordionTrigger
               className={cn(
                 (pathname === '/staffing' || pathname === '/class-teachers') &&
-                  'font-bold'
+                  'font-bold',
               )}
             >
               Учителя
@@ -131,7 +131,7 @@ export function MobileNavMenu() {
                     href="/staffing"
                     className={cn(
                       'block p-2 hover:bg-muted rounded',
-                      pathname === '/staffing' && 'font-bold bg-muted'
+                      pathname === '/staffing' && 'font-bold bg-muted',
                     )}
                   >
                     Кадровый состав
@@ -142,7 +142,7 @@ export function MobileNavMenu() {
                     href="/class-teachers"
                     className={cn(
                       'block p-2 hover:bg-muted rounded',
-                      pathname === '/class-teachers' && 'font-bold bg-muted'
+                      pathname === '/class-teachers' && 'font-bold bg-muted',
                     )}
                   >
                     Классные руководители
@@ -158,7 +158,7 @@ export function MobileNavMenu() {
               className={cn(
                 (pathname === '/exams' ||
                   pathname === '/first-grade-admission') &&
-                  'font-bold'
+                  'font-bold',
               )}
             >
               Для родителей
@@ -170,7 +170,7 @@ export function MobileNavMenu() {
                     href="/exams"
                     className={cn(
                       'block p-2 hover:bg-muted rounded',
-                      pathname === '/exams' && 'font-bold bg-muted'
+                      pathname === '/exams' && 'font-bold bg-muted',
                     )}
                   >
                     Экзамены 2025
@@ -182,7 +182,7 @@ export function MobileNavMenu() {
                     className={cn(
                       'block p-2 hover:bg-muted rounded',
                       pathname === '/first-grade-admission' &&
-                        'font-bold bg-muted'
+                        'font-bold bg-muted',
                     )}
                   >
                     О приёме в первый класс
@@ -199,7 +199,7 @@ export function MobileNavMenu() {
                 (pathname === '/lessons-schedule' ||
                   pathname === '/call-schedule' ||
                   pathname === '/plans') &&
-                  'font-bold'
+                  'font-bold',
               )}
             >
               Планы
@@ -211,7 +211,7 @@ export function MobileNavMenu() {
                     href="/lessons-schedule"
                     className={cn(
                       'block p-2 hover:bg-muted rounded',
-                      pathname === '/lessons-schedule' && 'font-bold bg-muted'
+                      pathname === '/lessons-schedule' && 'font-bold bg-muted',
                     )}
                   >
                     Расписание уроков
@@ -222,7 +222,7 @@ export function MobileNavMenu() {
                     href="/call-schedule"
                     className={cn(
                       'block p-2 hover:bg-muted rounded',
-                      pathname === '/call-schedule' && 'font-bold bg-muted'
+                      pathname === '/call-schedule' && 'font-bold bg-muted',
                     )}
                   >
                     Расписание звонков
@@ -233,7 +233,7 @@ export function MobileNavMenu() {
                     href="/plans"
                     className={cn(
                       'block p-2 hover:bg-muted rounded',
-                      pathname === '/plans' && 'font-bold bg-muted'
+                      pathname === '/plans' && 'font-bold bg-muted',
                     )}
                   >
                     Планы
@@ -248,7 +248,7 @@ export function MobileNavMenu() {
             <AccordionTrigger
               className={cn(
                 (pathname === '/reports' || pathname === '/budget') &&
-                  'font-bold'
+                  'font-bold',
               )}
             >
               Отчёты
@@ -260,7 +260,7 @@ export function MobileNavMenu() {
                     href="/reports"
                     className={cn(
                       'block p-2 hover:bg-muted rounded',
-                      pathname === '/reports' && 'font-bold bg-muted'
+                      pathname === '/reports' && 'font-bold bg-muted',
                     )}
                   >
                     Отчёты
@@ -271,7 +271,7 @@ export function MobileNavMenu() {
                     href="/budget"
                     className={cn(
                       'block p-2 hover:bg-muted rounded',
-                      pathname === '/budget' && 'font-bold bg-muted'
+                      pathname === '/budget' && 'font-bold bg-muted',
                     )}
                   >
                     Бюджет
@@ -286,7 +286,7 @@ export function MobileNavMenu() {
             href="/contacts"
             className={cn(
               'block p-4 hover:bg-muted rounded border-b font-medium text-sm',
-              pathname === '/contacts' && 'font-bold bg-muted'
+              pathname === '/contacts' && 'font-bold bg-muted',
             )}
           >
             Контакты
