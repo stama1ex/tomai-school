@@ -230,44 +230,9 @@ export const SettingsForm: React.FC<Props> = ({ initial }) => {
             onChange={(v) => set('teachersTotal', v)}
           />
           <NumberField
-            label="1-я дид. степень"
-            value={settings.teachersFirstDegree}
-            onChange={(v) => set('teachersFirstDegree', v)}
-          />
-          <NumberField
-            label="2-я дид. степень"
-            value={settings.teachersSecondDegree}
-            onChange={(v) => set('teachersSecondDegree', v)}
-          />
-          <NumberField
-            label="Техперсонал"
-            value={settings.staffTechnical}
-            onChange={(v) => set('staffTechnical', v)}
-          />
-          <NumberField
-            label="Библиотекарей"
-            value={settings.staffLibrarian}
-            onChange={(v) => set('staffLibrarian', v)}
-          />
-          <NumberField
-            label="Медсестёр"
-            value={settings.staffNurse}
-            onChange={(v) => set('staffNurse', v)}
-          />
-          <NumberField
             label="Учебных кабинетов"
             value={settings.classroomsTotal}
             onChange={(v) => set('classroomsTotal', v)}
-          />
-          <NumberField
-            label="Компьютеров в каб. информатики"
-            value={settings.computersItRoom}
-            onChange={(v) => set('computersItRoom', v)}
-          />
-          <NumberField
-            label="Доля гагаузов, %"
-            value={settings.gagauzPercent}
-            onChange={(v) => set('gagauzPercent', v)}
           />
         </div>
       </section>
