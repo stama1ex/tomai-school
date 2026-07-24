@@ -114,15 +114,39 @@ export function NavigationMenuDemo() {
           <NavigationMenuTrigger
             className={cn(
               'dark:bg-transparent',
-              (pathname === '/staffing' || pathname === '/class-teachers') &&
+              (pathname === '/staffing' ||
+                pathname === '/class-teachers' ||
+                pathname === '/administration' ||
+                pathname === '/management-structure') &&
                 'font-bold',
             )}
           >
             Учителя
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[200px] gap-4">
+            <ul className="grid w-[220px] gap-4">
               <li>
+                <NavigationMenuLink asChild>
+                  <Link
+                    href="/administration"
+                    className={cn(
+                      pathname === '/administration' && 'font-bold bg-muted',
+                    )}
+                  >
+                    Администрация
+                  </Link>
+                </NavigationMenuLink>
+                <NavigationMenuLink asChild>
+                  <Link
+                    href="/management-structure"
+                    className={cn(
+                      pathname === '/management-structure' &&
+                        'font-bold bg-muted',
+                    )}
+                  >
+                    Структура управления
+                  </Link>
+                </NavigationMenuLink>
                 <NavigationMenuLink asChild>
                   <Link
                     href="/staffing"

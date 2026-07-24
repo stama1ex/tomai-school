@@ -118,7 +118,10 @@ export function MobileNavMenu() {
           <AccordionItem value="teachers" className="px-4">
             <AccordionTrigger
               className={cn(
-                (pathname === '/staffing' || pathname === '/class-teachers') &&
+                (pathname === '/staffing' ||
+                  pathname === '/class-teachers' ||
+                  pathname === '/administration' ||
+                  pathname === '/management-structure') &&
                   'font-bold',
               )}
             >
@@ -126,6 +129,29 @@ export function MobileNavMenu() {
             </AccordionTrigger>
             <AccordionContent>
               <ul className="grid gap-4">
+                <li>
+                  <Link
+                    href="/administration"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/administration' && 'font-bold bg-muted',
+                    )}
+                  >
+                    Администрация
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/management-structure"
+                    className={cn(
+                      'block p-2 hover:bg-muted rounded',
+                      pathname === '/management-structure' &&
+                        'font-bold bg-muted',
+                    )}
+                  >
+                    Структура управления
+                  </Link>
+                </li>
                 <li>
                   <Link
                     href="/staffing"

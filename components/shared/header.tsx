@@ -17,7 +17,7 @@ export async function Header({ className }: Props) {
   return (
     <header
       className={cn(
-        'border-b border-border sticky top-0 z-10 dark:backdrop-blur-xl not-dark:bg-background',
+        'border-b border-border sticky top-0 z-30 dark:backdrop-blur-xl not-dark:bg-background',
         className
       )}
     >

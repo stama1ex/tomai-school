@@ -14,6 +14,9 @@ export interface SiteSettings {
   email: string;
   workHours: string;
   directorName: string;
+  directorPosition: string;
+  directorOfficeHours: string;
+  directorEmail: string;
   language: string;
   socialLinks: SocialLink[];
   studentsTotal: number;
@@ -26,6 +29,7 @@ export interface SiteSettings {
   staffLibrarian: number;
   staffNurse: number;
   classroomsTotal: number;
+  classesTotal: number;
   computersItRoom: number;
   gagauzPercent: number;
   appealsNote: string;
@@ -40,6 +44,9 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   email: '',
   workHours: '',
   directorName: '',
+  directorPosition: '',
+  directorOfficeHours: '',
+  directorEmail: '',
   language: 'русский',
   socialLinks: [],
   studentsTotal: 0,
@@ -52,6 +59,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   staffLibrarian: 0,
   staffNurse: 0,
   classroomsTotal: 0,
+  classesTotal: 0,
   computersItRoom: 0,
   gagauzPercent: 0,
   appealsNote: '',
@@ -68,6 +76,9 @@ function mapRow(row: any): SiteSettings {
     email: row.email ?? '',
     workHours: row.work_hours ?? '',
     directorName: row.director_name ?? '',
+    directorPosition: row.director_position ?? '',
+    directorOfficeHours: row.director_office_hours ?? '',
+    directorEmail: row.director_email ?? '',
     language: row.language ?? '',
     socialLinks: Array.isArray(row.social_links) ? row.social_links : [],
     studentsTotal: row.students_total ?? 0,
@@ -80,6 +91,7 @@ function mapRow(row: any): SiteSettings {
     staffLibrarian: row.staff_librarian ?? 0,
     staffNurse: row.staff_nurse ?? 0,
     classroomsTotal: row.classrooms_total ?? 0,
+    classesTotal: row.classes_total ?? 0,
     computersItRoom: row.computers_it_room ?? 0,
     gagauzPercent: row.gagauz_percent ?? 0,
     appealsNote: row.appeals_note ?? '',
@@ -115,6 +127,9 @@ export async function updateSiteSettings(
       email = ${merged.email},
       work_hours = ${merged.workHours},
       director_name = ${merged.directorName},
+      director_position = ${merged.directorPosition},
+      director_office_hours = ${merged.directorOfficeHours},
+      director_email = ${merged.directorEmail},
       language = ${merged.language},
       social_links = ${JSON.stringify(merged.socialLinks)}::jsonb,
       students_total = ${merged.studentsTotal},
@@ -127,6 +142,7 @@ export async function updateSiteSettings(
       staff_librarian = ${merged.staffLibrarian},
       staff_nurse = ${merged.staffNurse},
       classrooms_total = ${merged.classroomsTotal},
+      classes_total = ${merged.classesTotal},
       computers_it_room = ${merged.computersItRoom},
       gagauz_percent = ${merged.gagauzPercent},
       appeals_note = ${merged.appealsNote},

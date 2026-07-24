@@ -150,6 +150,29 @@ export const SettingsForm: React.FC<Props> = ({ initial }) => {
             onChange={(e) => set('directorName', e.target.value)}
           />
         </div>
+        <div>
+          <label className={FIELD_LABEL_CLASS}>Должность директора</label>
+          <Input
+            value={settings.directorPosition}
+            onChange={(e) => set('directorPosition', e.target.value)}
+          />
+        </div>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label className={FIELD_LABEL_CLASS}>Приёмные часы директора</label>
+            <Input
+              value={settings.directorOfficeHours}
+              onChange={(e) => set('directorOfficeHours', e.target.value)}
+            />
+          </div>
+          <div>
+            <label className={FIELD_LABEL_CLASS}>Email директора</label>
+            <Input
+              value={settings.directorEmail}
+              onChange={(e) => set('directorEmail', e.target.value)}
+            />
+          </div>
+        </div>
       </section>
 
       <section className="flex flex-col gap-4">
@@ -197,14 +220,9 @@ export const SettingsForm: React.FC<Props> = ({ initial }) => {
             onChange={(v) => set('studentsTotal', v)}
           />
           <NumberField
-            label="В начальном звене"
-            value={settings.studentsPrimary}
-            onChange={(v) => set('studentsPrimary', v)}
-          />
-          <NumberField
-            label="В среднем звене"
-            value={settings.studentsSecondary}
-            onChange={(v) => set('studentsSecondary', v)}
+            label="Классов всего"
+            value={settings.classesTotal}
+            onChange={(v) => set('classesTotal', v)}
           />
           <NumberField
             label="Педагогов всего"

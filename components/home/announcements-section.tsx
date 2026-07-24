@@ -2,7 +2,6 @@
 
 import { useRef, useState } from 'react';
 import useSWR from 'swr';
-import { upload } from '@vercel/blob/client';
 import { ImagePlus, Megaphone, Pencil, Plus, Trash, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { Container } from '@/components/shared/container';
@@ -19,6 +18,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useAdminStore } from '@/store/admin';
+import { compressImage } from '@/lib/image';
 
 interface Announcement {
   id: string;
@@ -39,16 +39,23 @@ const formatDate = (value: string) =>
 
 async function uploadImage(file: File): Promise<string | null> {
   try {
-    const blob = await upload(`announcements/${file.name}`, file, {
-      access: 'public',
-      handleUploadUrl: '/api/upload',
-    });
-    return blob.url;
+    const optimized = await compressImage(file);
+
+    const formData = new FormData();
+    formData.append('file', optimized);
+
+    const res = await fetch('/api/upload', { method: 'POST', body: formData });
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      toast.error(data.error || 'Не удалось загрузить изображение');
+      return null;
+    }
+
+    return data.url as string;
   } catch (e) {
     console.error(e);
-    toast.error(
-      e instanceof Error ? e.message : 'Не удалось загрузить изображение'
-    );
+    toast.error('Не удалось загрузить изображение');
     return null;
   }
 }

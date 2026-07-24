@@ -96,9 +96,7 @@ export async function Footer() {
         </div>
 
         <div>
-          <h3 className="font-semibold dark:text-white mb-3">
-            Быстрые ссылки
-          </h3>
+          <h3 className="font-semibold dark:text-white mb-3">Быстрые ссылки</h3>
           <ul className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
             {quickLinks.map((link) => (
               <li key={link.href}>
@@ -117,7 +115,7 @@ export async function Footer() {
             {settings.language && (
               <>
                 <br />
-                Обучение ведётся на {settings.language} языке.
+                Обучение ведётся на русском языке.
               </>
             )}
           </p>

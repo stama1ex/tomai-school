@@ -85,6 +85,11 @@ async function migrate() {
     )
   `;
 
+  await sql`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS classes_total INT NOT NULL DEFAULT 0`;
+  await sql`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS director_position TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS director_office_hours TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS director_email TEXT NOT NULL DEFAULT ''`;
+
   await sql`
     INSERT INTO site_settings (
       id, full_name, short_name, address, phone, email, work_hours,
@@ -93,6 +98,7 @@ async function migrate() {
       teachers_total, teachers_first_degree, teachers_second_degree,
       staff_technical, staff_librarian, staff_nurse,
       classrooms_total, computers_it_room, gagauz_percent,
+      classes_total, director_position, director_office_hours, director_email,
       appeals_note, concern_note
     )
     VALUES (
@@ -106,10 +112,14 @@ async function migrate() {
       'Стамат Нина Семёновна',
       'русский',
       '[]',
-      351, 165, 186,
+      319, 165, 186,
       35, 3, 22,
       24, 1, 1,
       24, 11, 85,
+      15,
+      'Директор Публичного учреждения «Гимназия с. Томай»',
+      'понедельник, среда с 14:00–17:00',
+      'liceytomay@gmail.com',
       'Обращения рассматриваются администрацией гимназии в порядке и сроки, установленные законодательством.',
       'Если вам известно о случае насилия, буллинга или нарушения прав ребёнка, сообщите об этом администрации гимназии через форму ниже или по бесплатной круглосуточной линии «Telefonul Copilului» — 116 111.'
     )
