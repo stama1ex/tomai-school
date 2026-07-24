@@ -12,14 +12,18 @@ if (!connectionString) {
 async function migrate() {
   console.log('Создание таблиц для системы авторизации...');
 
+  // Даты — TIMESTAMPTZ (не TIMESTAMP): на "холодном" подключении Neon
+  // сессионная тайм-зона может на мгновение отличаться от UTC, из-за чего
+  // NOW() для обычного TIMESTAMP сохраняется со сдвигом. TIMESTAMPTZ хранит
+  // абсолютный момент времени и не зависит от сессионной тайм-зоны.
   await sql`
     CREATE TABLE IF NOT EXISTS admins (
       id UUID PRIMARY KEY,
       username TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
       failed_attempts INT NOT NULL DEFAULT 0,
-      locked_until TIMESTAMP,
-      created_at TIMESTAMP DEFAULT NOW()
+      locked_until TIMESTAMPTZ,
+      created_at TIMESTAMPTZ DEFAULT NOW()
     )
   `;
 
@@ -28,14 +32,42 @@ async function migrate() {
       id UUID PRIMARY KEY,
       admin_id UUID NOT NULL REFERENCES admins(id) ON DELETE CASCADE,
       token_hash TEXT NOT NULL UNIQUE,
-      expires_at TIMESTAMP NOT NULL,
-      created_at TIMESTAMP DEFAULT NOW()
+      expires_at TIMESTAMPTZ NOT NULL,
+      created_at TIMESTAMPTZ DEFAULT NOW()
     )
   `;
 
   await sql`
     CREATE INDEX IF NOT EXISTS admin_sessions_admin_id_idx
     ON admin_sessions(admin_id)
+  `;
+
+  await sql`ALTER TABLE admin_sessions ADD COLUMN IF NOT EXISTS display_name TEXT`;
+  await sql`ALTER TABLE admin_sessions ADD COLUMN IF NOT EXISTS user_agent TEXT`;
+  await sql`ALTER TABLE admin_sessions ADD COLUMN IF NOT EXISTS last_active_at TIMESTAMPTZ DEFAULT NOW()`;
+
+  console.log('Создание таблицы login_verifications...');
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS login_verifications (
+      id UUID PRIMARY KEY,
+      admin_id UUID NOT NULL REFERENCES admins(id) ON DELETE CASCADE,
+      purpose TEXT NOT NULL,
+      code_hash TEXT NOT NULL,
+      attempts INT NOT NULL DEFAULT 0,
+      display_name TEXT,
+      user_agent TEXT,
+      pending_username TEXT,
+      pending_password_hash TEXT,
+      expires_at TIMESTAMPTZ NOT NULL,
+      consumed_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `;
+
+  await sql`
+    CREATE INDEX IF NOT EXISTS login_verifications_admin_id_idx
+    ON login_verifications(admin_id)
   `;
 
   console.log('Создание таблицы announcements...');

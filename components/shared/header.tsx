@@ -3,6 +3,7 @@ import { Container } from './container';
 import { cn } from '@/lib/utils';
 import { NavigationMenuDemo } from './nav-menu';
 import { ThemeToggleButton } from './theme-toggle-button';
+import { HeaderAdminLink } from './header-admin-link';
 import Link from 'next/link';
 import { MobileNavMenu } from './mobile-nav-menu';
 import { getSiteSettings } from '@/lib/settings';
@@ -33,10 +34,11 @@ export async function Header({ className }: Props) {
         >
           {settings.shortName || 'ПУ Гимназия с. Томай'}
         </Link>
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-2 sm:gap-4 items-center">
           <div className="hidden md:block">
             <NavigationMenuDemo />
           </div>
+          <HeaderAdminLink />
           <div className="md:hidden block">
             <ThemeToggleButton />
           </div>
