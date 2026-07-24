@@ -58,7 +58,7 @@ export const Card: React.FC<CardItem> = ({
                 <Pencil className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80">
+            <PopoverContent className="w-[min(20rem,calc(100vw-2rem))]">
               <div className="flex flex-col gap-2">
                 <input
                   type="text"

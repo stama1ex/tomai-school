@@ -1,31 +1,20 @@
-import { Banner } from '@/components/shared/banner';
-import { Title } from '@/components/shared/title';
+import { HeroSection } from '@/components/home/hero-section';
+import { ContactBar } from '@/components/home/contact-bar';
+import { StatsStrip } from '@/components/home/stats-strip';
+import { QuickLinks } from '@/components/home/quick-links';
+import { AnnouncementsSection } from '@/components/home/announcements-section';
+import { getSiteSettings } from '@/lib/settings';
 
-export default function Home() {
+export default async function Home() {
+  const settings = await getSiteSettings();
+
   return (
     <>
-      <Banner image="/background2.jpg" title={'Главная'} className="mb-16" />
-      <div className="px-8">
-        <Title
-          text={'Добро пожаловать на официальный сайт ПУ Гимназия села Томай!'}
-          size="md"
-          className="dark:text-white font-bold text-center mb-8"
-        />
-
-        <Title
-          text={
-            'Bine ați venit pe site-ul oficial al IP Gimnaziul din satul Tomai!'
-          }
-          size="md"
-          className="dark:text-white font-bold text-center mb-8"
-        />
-
-        <Title
-          text={'Hoș geldiniz Publik kurumu Tomay gimnaziyasının saytına!'}
-          size="md"
-          className="dark:text-white font-bold text-center mb-8"
-        />
-      </div>
+      <HeroSection />
+      <ContactBar settings={settings} />
+      <StatsStrip settings={settings} />
+      <QuickLinks />
+      <AnnouncementsSection />
     </>
   );
 }

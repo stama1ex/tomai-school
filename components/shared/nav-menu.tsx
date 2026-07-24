@@ -4,6 +4,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import useSWR from 'swr';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -15,25 +16,15 @@ import {
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
 
+interface ExamYearRow {
+  id: string;
+  year: string;
+}
+
 export function NavigationMenuDemo() {
   const pathname = usePathname();
-  const [examYear, setExamYear] = React.useState<string>('2025');
-
-  React.useEffect(() => {
-    const fetchExamYear = async () => {
-      try {
-        const response = await fetch('/api/exam-year');
-        const data = await response.json();
-        if (data && data.length > 0) {
-          setExamYear(data[0].year);
-        }
-      } catch (error) {
-        console.error('Failed to fetch exam year:', error);
-      }
-    };
-
-    fetchExamYear();
-  }, []);
+  const { data } = useSWR<ExamYearRow[]>('/api/exam-year');
+  const examYear = data?.[0]?.year ?? '2025';
 
   return (
     <NavigationMenu viewport={false}>

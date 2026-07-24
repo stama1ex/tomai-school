@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { mutate } from 'swr';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -28,34 +28,9 @@ export function EditableTable<T extends { id?: string }>({
   apiPath,
   className,
 }: EditableTableProps<T>) {
-  const [rows, setRows] = useState<T[]>(data);
   const [editingRow, setEditingRow] = useState<string | null>(null);
   const [editedRow, setEditedRow] = useState<Partial<T>>({});
-  const [loading, setLoading] = useState(apiPath ? true : false);
   const { isAdmin } = useAdminStore();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (apiPath) {
-        try {
-          setLoading(true);
-          const response = await fetch(apiPath);
-          if (!response.ok) throw new Error('Ошибка при загрузке данных');
-          const result = await response.json();
-          setRows(result);
-        } catch (error) {
-          toast.error('Не удалось загрузить данные');
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-    fetchData();
-  }, [apiPath]);
-
-  useEffect(() => {
-    setRows(data);
-  }, [data]);
 
   const handleEdit = (row: T) => {
     setEditingRow(row.id ?? '');
@@ -71,38 +46,36 @@ export function EditableTable<T extends { id?: string }>({
   const handleSave = async () => {
     if (!editingRow || !isAdmin) return;
 
-    try {
-      const updated = rows.map((r) =>
-        r.id === editingRow ? { ...r, ...editedRow } : r
-      );
-      setRows(updated);
-      setEditingRow(null);
+    const id = editingRow;
+    const patch = editedRow;
+    setEditingRow(null);
 
-      if (apiPath) {
+    if (apiPath) {
+      mutate(
+        apiPath,
+        (current: T[] | undefined) =>
+          (current ?? []).map((r) => (r.id === id ? { ...r, ...patch } : r)),
+        { revalidate: false }
+      );
+
+      try {
         const response = await fetch(apiPath, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: editingRow, newData: editedRow }),
+          body: JSON.stringify({ id, newData: patch }),
         });
         if (!response.ok) {
           throw new Error('Ошибка при сохранении');
         }
         toast.success('Обновлено!');
+      } catch {
+        toast.error('Ошибка при обновлении');
+        mutate(apiPath);
       }
-    } catch (error) {
-      toast.error('Ошибка при обновлении');
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center my-12">
-        <span className="loading loading-spinner loading-lg" />
-      </div>
-    );
-  }
-
-  if (!rows.length) {
+  if (!data.length) {
     return <div>Нет данных для отображения</div>;
   }
 
@@ -123,7 +96,7 @@ export function EditableTable<T extends { id?: string }>({
           </tr>
         </thead>
         <tbody className="divide-y divide-primary/10">
-          {rows.map((row, index) => (
+          {data.map((row, index) => (
             <tr key={row.id ?? JSON.stringify(row)}>
               {columns.map((col) => (
                 <td

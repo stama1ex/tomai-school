@@ -1,13 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@vercel/postgres';
 import { v4 as uuidv4 } from 'uuid';
+import { requireAdmin, unauthorized } from '@/lib/auth';
+
+const ALLOWED_TABLES = new Set([
+  'budget',
+  'call_schedule',
+  'charter',
+  'class_teachers',
+  'exam_titles',
+  'exam_year',
+  'first_grade_admission',
+  'graduation_exams',
+  'lessons_schedule',
+  'plans',
+  'primary_exams',
+  'reports',
+  'staffing',
+  'announcements',
+]);
 
 export const createCrudHandlers = (tableName: string) => {
+  if (!ALLOWED_TABLES.has(tableName)) {
+    throw new Error(`Unknown table passed to createCrudHandlers: ${tableName}`);
+  }
+
   const extractData = (result: any) => result.rows;
 
-  // ✅ GET: сортировка по order, с поддержкой ?type= для фильтра
-  const GET = async (req: Request) => {
+  // ✅ GET: сортировка по order, с поддержкой ?type= для фильтра (публичный доступ на чтение)
+  const GET = async (req: NextRequest) => {
     const url = new URL(req.url);
     const type = url.searchParams.get('type');
     const whereClause = type ? ` WHERE "type" = $1` : '';
@@ -28,8 +50,11 @@ export const createCrudHandlers = (tableName: string) => {
     }
   };
 
-  // ✅ POST: создание записи
-  const POST = async (req: Request) => {
+  // ✅ POST: создание записи (только для авторизованного администратора)
+  const POST = async (req: NextRequest) => {
+    const session = await requireAdmin(req);
+    if (!session) return unauthorized();
+
     const body = await req.json();
     const id = body.id || uuidv4();
 
@@ -65,8 +90,11 @@ export const createCrudHandlers = (tableName: string) => {
     }
   };
 
-  // ✅ PUT: поддержка { id, newData: {...} } и { id, field1: value1 }
-  const PUT = async (req: Request) => {
+  // ✅ PUT: поддержка { id, newData: {...} } и { id, field1: value1 } (только для администратора)
+  const PUT = async (req: NextRequest) => {
+    const session = await requireAdmin(req);
+    if (!session) return unauthorized();
+
     const body = await req.json();
 
     // Массовое обновление order
@@ -138,8 +166,11 @@ export const createCrudHandlers = (tableName: string) => {
     }
   };
 
-  // ✅ DELETE
-  const DELETE = async (req: Request) => {
+  // ✅ DELETE (только для администратора)
+  const DELETE = async (req: NextRequest) => {
+    const session = await requireAdmin(req);
+    if (!session) return unauthorized();
+
     const { id } = await req.json();
     try {
       const result = await sql.query(`DELETE FROM ${tableName} WHERE id = $1`, [

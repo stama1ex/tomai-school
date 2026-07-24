@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
+import useSWR, { mutate } from 'swr';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAdminStore } from '@/store/admin';
@@ -9,47 +9,27 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { Title } from './title';
 
+interface ExamYearRow {
+  id: string;
+  year: string;
+}
+
 interface EditableYearProps {
   apiPath: string;
   className?: string;
-  onYearChange?: (newYear: string) => void;
 }
 
-export function EditableYear({
-  apiPath,
-  className,
-  onYearChange,
-}: EditableYearProps) {
-  const [year, setYear] = useState('2025');
+export function EditableYear({ apiPath, className }: EditableYearProps) {
+  const { data, isLoading } = useSWR<ExamYearRow[]>(apiPath);
   const [editing, setEditing] = useState(false);
   const [editedYear, setEditedYear] = useState('');
-  const [id, setId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const { isAdmin } = useAdminStore();
 
-  useEffect(() => {
-    const fetchYear = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(apiPath);
-        if (!response.ok) throw new Error('Ошибка при загрузке года');
-        const result = await response.json();
-        if (result && result.length > 0) {
-          setYear(result[0].year);
-          setId(result[0].id);
-          setEditedYear(result[0].year);
-          if (onYearChange) onYearChange(result[0].year);
-        }
-      } catch (error) {
-        toast.error('Не удалось загрузить год');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchYear();
-  }, [apiPath, onYearChange]);
+  const current = data?.[0];
+  const year = current?.year ?? '2025';
 
   const handleEdit = () => {
+    setEditedYear(year);
     setEditing(true);
   };
 
@@ -58,28 +38,29 @@ export function EditableYear({
   };
 
   const handleSave = async () => {
-    if (!id || !isAdmin) return;
+    if (!current || !isAdmin) return;
+
+    const newYear = editedYear;
+    setEditing(false);
+    mutate(apiPath, [{ ...current, year: newYear }], { revalidate: false });
 
     try {
-      setYear(editedYear);
-      if (onYearChange) onYearChange(editedYear);
-      setEditing(false);
-
       const response = await fetch(apiPath, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, newData: { year: editedYear } }),
+        body: JSON.stringify({ id: current.id, newData: { year: newYear } }),
       });
       if (!response.ok) {
         throw new Error('Ошибка при сохранении');
       }
       toast.success('Год обновлен!');
-    } catch (error) {
+    } catch {
       toast.error('Ошибка при обновлении года');
+      mutate(apiPath);
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return <span className="animate-pulse">Загрузка года...</span>;
   }
 

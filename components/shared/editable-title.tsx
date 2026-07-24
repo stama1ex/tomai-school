@@ -1,14 +1,20 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 // components/shared/editable-title.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
+import useSWR, { mutate } from 'swr';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Title } from '@/components/shared/title';
 import { useAdminStore } from '@/store/admin';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+
+interface ExamTitleRow {
+  id: string;
+  type: string;
+  text: string;
+}
 
 interface EditableTitleProps {
   apiPath: string;
@@ -23,35 +29,17 @@ export function EditableTitle({
   size = 'md',
   className,
 }: EditableTitleProps) {
-  const [text, setText] = useState('');
+  const key = `${apiPath}?type=${type}`;
+  const { data, isLoading } = useSWR<ExamTitleRow[]>(key);
   const [editing, setEditing] = useState(false);
   const [editedText, setEditedText] = useState('');
-  const [id, setId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const { isAdmin } = useAdminStore();
 
-  useEffect(() => {
-    const fetchTitle = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`${apiPath}?type=${type}`);
-        if (!response.ok) throw new Error('Ошибка при загрузке заголовка');
-        const result = await response.json();
-        if (result && result.length > 0) {
-          setText(result[0].text);
-          setId(result[0].id);
-          setEditedText(result[0].text);
-        }
-      } catch (error) {
-        toast.error('Не удалось загрузить заголовок');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTitle();
-  }, [apiPath, type]);
+  const current = data?.[0];
+  const text = current?.text ?? '';
 
   const handleEdit = () => {
+    setEditedText(text);
     setEditing(true);
   };
 
@@ -60,27 +48,29 @@ export function EditableTitle({
   };
 
   const handleSave = async () => {
-    if (!id || !isAdmin) return;
+    if (!current || !isAdmin) return;
+
+    const newText = editedText;
+    setEditing(false);
+    mutate(key, [{ ...current, text: newText }], { revalidate: false });
 
     try {
-      setText(editedText);
-      setEditing(false);
-
       const response = await fetch(apiPath, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, newData: { text: editedText } }),
+        body: JSON.stringify({ id: current.id, newData: { text: newText } }),
       });
       if (!response.ok) {
         throw new Error('Ошибка при сохранении');
       }
       toast.success('Заголовок обновлен!');
-    } catch (error) {
+    } catch {
       toast.error('Ошибка при обновлении заголовка');
+      mutate(key);
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="mx-auto mb-6 animate-pulse h-8 w-3/4 bg-primary/10 rounded" />
     );

@@ -52,7 +52,7 @@ export const AddCardButton: React.FC<AddCardButtonProps> = ({
           {placeholder || 'Добавить документ'}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80">
+      <PopoverContent className="w-[min(20rem,calc(100vw-2rem))]">
         <div className="flex flex-col gap-2">
           <Input
             value={newPrimary}

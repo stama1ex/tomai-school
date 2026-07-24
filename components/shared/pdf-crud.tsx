@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 import { Pdf } from '@/components/shared/pdf';
 import { AddCardButton } from '@/components/shared/add-card-button';
 import { toast } from 'sonner';
@@ -9,6 +8,12 @@ import { useAdminStore } from '@/store/admin';
 import { Title } from '@/components/shared/title';
 import { Container } from '@/components/shared/container';
 import { Plus } from 'lucide-react';
+
+interface RawDoc {
+  id: string;
+  title?: string;
+  pdf_url?: string;
+}
 
 interface PdfDocument {
   id: string;
@@ -22,40 +27,16 @@ interface Props {
 }
 
 export const PdfCrud: React.FC<Props> = ({ apiPath, title }) => {
-  const [docs, setDocs] = useState<PdfDocument[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const isAdmin = useAdminStore((s) => s.isAdmin);
+  const { data, isLoading, mutate } = useSWR<RawDoc[]>(apiPath);
 
-  useEffect(() => {
-    const fetchDocs = async () => {
-      setIsLoading(true);
-      try {
-        const res = await fetch(apiPath);
-        if (!res.ok) {
-          throw new Error(`HTTP error: ${res.status} ${res.statusText}`);
-        }
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          const mappedDocs = data.map((doc: any) => ({
-            id: doc.id,
-            title: doc.title || 'Без названия',
-            pdfUrl: doc.pdf_url || '',
-          }));
-          setDocs(mappedDocs);
-        } else {
-          setDocs([]);
-          toast.error('Полученные данные не являются массивом');
-        }
-      } catch (e: unknown) {
-        const error = e instanceof Error ? e : new Error('Неизвестная ошибка');
-        console.error('Ошибка загрузки документов:', error);
-        toast.error(`Не удалось загрузить документы: ${error.message}`);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchDocs();
-  }, [apiPath]);
+  const docs: PdfDocument[] = Array.isArray(data)
+    ? data.map((doc) => ({
+        id: doc.id,
+        title: doc.title || 'Без названия',
+        pdfUrl: doc.pdf_url || '',
+      }))
+    : [];
 
   const handleAdd = async (
     data: { inputPrimary: string; inputSecondary: string },
@@ -71,7 +52,6 @@ export const PdfCrud: React.FC<Props> = ({ apiPath, title }) => {
       return;
     }
 
-    // Basic URL validation
     try {
       new URL(newDoc.pdf_url);
     } catch {
@@ -94,14 +74,9 @@ export const PdfCrud: React.FC<Props> = ({ apiPath, title }) => {
       }
 
       const created = await res.json();
-      setDocs((prev) => [
-        ...prev,
-        {
-          id: created.id,
-          title: created.title,
-          pdfUrl: created.pdf_url,
-        },
-      ]);
+      mutate((current) => [...(current ?? []), created], {
+        revalidate: false,
+      });
       setIsPopoverOpen(false);
       toast.success('Документ добавлен!');
     } catch (e: unknown) {
@@ -147,12 +122,12 @@ export const PdfCrud: React.FC<Props> = ({ apiPath, title }) => {
         );
       }
 
-      setDocs((prev) =>
-        prev.map((doc) =>
-          doc.id === id
-            ? { ...doc, title: data.title, pdfUrl: data.pdfUrl }
-            : doc
-        )
+      mutate(
+        (current) =>
+          (current ?? []).map((doc) =>
+            doc.id === id ? { ...doc, ...updatedData } : doc
+          ),
+        { revalidate: false }
       );
       setIsPopoverOpen(false);
       toast.success('Документ обновлен!');
@@ -164,25 +139,22 @@ export const PdfCrud: React.FC<Props> = ({ apiPath, title }) => {
   };
 
   const handleDelete = async (id: string, docTitle: string) => {
-    const deleted = docs.find((doc) => doc.id === id);
+    const deleted = (data ?? []).find((doc) => doc.id === id);
     if (!deleted) return;
 
-    setDocs((prev) => prev.filter((doc) => doc.id !== id));
+    mutate((current) => (current ?? []).filter((doc) => doc.id !== id), {
+      revalidate: false,
+    });
 
     toast.success(`Документ "${docTitle}" удален`, {
       action: {
         label: 'Отменить',
         onClick: async () => {
-          const restoreDoc = {
-            id: deleted.id,
-            title: deleted.title,
-            pdf_url: deleted.pdfUrl,
-          };
           try {
             const res = await fetch(apiPath, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(restoreDoc),
+              body: JSON.stringify(deleted),
             });
             if (!res.ok) {
               const errorData = await res.json().catch(() => ({}));
@@ -192,7 +164,9 @@ export const PdfCrud: React.FC<Props> = ({ apiPath, title }) => {
                   'Не удалось восстановить'
               );
             }
-            setDocs((prev) => [...prev, deleted]);
+            mutate((current) => [...(current ?? []), deleted], {
+              revalidate: false,
+            });
             toast.success('Удаление отменено');
           } catch (e: unknown) {
             const error =
@@ -201,7 +175,6 @@ export const PdfCrud: React.FC<Props> = ({ apiPath, title }) => {
             toast.error(
               `Ошибка при восстановлении документа: ${error.message}`
             );
-            setDocs((prev) => prev.filter((doc) => doc.id !== id));
           }
         },
       },
@@ -222,7 +195,9 @@ export const PdfCrud: React.FC<Props> = ({ apiPath, title }) => {
     } catch (e: unknown) {
       const error = e instanceof Error ? e : new Error('Неизвестная ошибка');
       console.error('Ошибка удаления:', error);
-      setDocs((prev) => [...prev, deleted]);
+      mutate((current) => [...(current ?? []), deleted], {
+        revalidate: false,
+      });
       toast.error(`Ошибка при удалении документа: ${error.message}`);
     }
   };

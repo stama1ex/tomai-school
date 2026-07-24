@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 import { Banner } from '@/components/shared/banner';
 import { Title } from '@/components/shared/title';
 import { Container } from '@/components/shared/container';
@@ -15,6 +14,11 @@ export interface Item {
   id: string;
   primary: string;
   secondary: string;
+}
+
+interface RawRow {
+  id: string;
+  [key: string]: unknown;
 }
 
 interface CrudTableProps {
@@ -38,45 +42,27 @@ export const CrudTable: React.FC<CrudTableProps> = ({
   primaryLabelDisplay,
   secondaryLabelDisplay,
 }) => {
-  const [items, setItems] = useState<Item[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const isAdmin = useAdminStore((s) => s.isAdmin);
+  const primaryKey = primaryLabel.toLowerCase();
+  const secondaryKey = secondaryLabel.toLowerCase();
 
-  const fetchItems = async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch(apiPath);
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setItems(
-          data.map((d: any) => ({
-            id: d.id,
-            primary: d[primaryLabel.toLowerCase()],
-            secondary: d[secondaryLabel.toLowerCase()],
-          }))
-        );
-      } else {
-        setItems([]);
-      }
-    } catch (e) {
-      console.error(e);
-      toast.error('Не удалось загрузить данные');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { data, isLoading, mutate } = useSWR<RawRow[]>(apiPath);
 
-  useEffect(() => {
-    fetchItems();
-  }, [apiPath]);
+  const items: Item[] = Array.isArray(data)
+    ? data.map((row) => ({
+        id: row.id,
+        primary: String(row[primaryKey] ?? ''),
+        secondary: String(row[secondaryKey] ?? ''),
+      }))
+    : [];
 
   const handleAdd = async (newData: {
     primaryText: string;
     secondaryText: string;
   }) => {
     const body = {
-      [primaryLabel.toLowerCase()]: newData.primaryText,
-      [secondaryLabel.toLowerCase()]: newData.secondaryText,
+      [primaryKey]: newData.primaryText,
+      [secondaryKey]: newData.secondaryText,
     };
 
     try {
@@ -93,14 +79,9 @@ export const CrudTable: React.FC<CrudTableProps> = ({
       }
 
       const created = await res.json();
-      setItems((prev) => [
-        ...prev,
-        {
-          id: created.id,
-          primary: created[primaryLabel.toLowerCase()],
-          secondary: created[secondaryLabel.toLowerCase()],
-        },
-      ]);
+      mutate((current) => [...(current ?? []), created], {
+        revalidate: false,
+      });
       toast.success('Добавлено!');
     } catch (e) {
       console.error(e);
@@ -116,8 +97,8 @@ export const CrudTable: React.FC<CrudTableProps> = ({
       const body = {
         id,
         newData: {
-          [primaryLabel.toLowerCase()]: newData.primaryText,
-          [secondaryLabel.toLowerCase()]: newData.secondaryText,
+          [primaryKey]: newData.primaryText,
+          [secondaryKey]: newData.secondaryText,
         },
       };
 
@@ -131,16 +112,18 @@ export const CrudTable: React.FC<CrudTableProps> = ({
         throw new Error('Failed to edit');
       }
 
-      setItems((prev) =>
-        prev.map((i) =>
-          i.id === id
-            ? {
-                ...i,
-                primary: newData.primaryText,
-                secondary: newData.secondaryText,
-              }
-            : i
-        )
+      mutate(
+        (current) =>
+          (current ?? []).map((row) =>
+            row.id === id
+              ? {
+                  ...row,
+                  [primaryKey]: newData.primaryText,
+                  [secondaryKey]: newData.secondaryText,
+                }
+              : row
+          ),
+        { revalidate: false }
       );
 
       toast.success('Обновлено!');
@@ -151,25 +134,25 @@ export const CrudTable: React.FC<CrudTableProps> = ({
   };
 
   const handleDelete = async (id: string, name: string) => {
-    const deleted = items.find((i) => i.id === id);
+    const deleted = (data ?? []).find((row) => row.id === id);
     if (!deleted) return;
 
-    setItems((prev) => prev.filter((i) => i.id !== id));
+    mutate((current) => (current ?? []).filter((row) => row.id !== id), {
+      revalidate: false,
+    });
 
     toast.success(`Удалено "${name}"`, {
       action: {
         label: 'Отменить',
         onClick: async () => {
-          setItems((prev) => [...prev, deleted]);
+          mutate((current) => [...(current ?? []), deleted], {
+            revalidate: false,
+          });
           try {
             await fetch(apiPath, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                id: deleted.id,
-                [primaryLabel.toLowerCase()]: deleted.primary,
-                [secondaryLabel.toLowerCase()]: deleted.secondary,
-              }),
+              body: JSON.stringify(deleted),
             });
             toast.success('Удаление отменено');
           } catch (e) {
@@ -189,7 +172,9 @@ export const CrudTable: React.FC<CrudTableProps> = ({
       if (!res.ok) throw new Error('Failed delete');
     } catch (e) {
       console.error(e);
-      setItems((prev) => [...prev, deleted]);
+      mutate((current) => [...(current ?? []), deleted], {
+        revalidate: false,
+      });
       toast.error('Ошибка при удалении');
     }
   };
