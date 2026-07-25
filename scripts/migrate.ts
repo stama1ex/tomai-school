@@ -182,6 +182,34 @@ async function migrate() {
     )
   `;
 
+  console.log('Создание таблиц custom_pages и custom_page_documents...');
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS custom_pages (
+      id UUID PRIMARY KEY,
+      slug TEXT UNIQUE NOT NULL,
+      title TEXT NOT NULL,
+      "order" INT NOT NULL,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS custom_page_documents (
+      id UUID PRIMARY KEY,
+      page_id UUID NOT NULL REFERENCES custom_pages(id) ON DELETE CASCADE,
+      title TEXT NOT NULL,
+      pdf_url TEXT NOT NULL,
+      "order" INT NOT NULL,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `;
+
+  await sql`
+    CREATE INDEX IF NOT EXISTS custom_page_documents_page_id_idx
+    ON custom_page_documents(page_id)
+  `;
+
   console.log('✅ Миграция успешно выполнена.');
 }
 

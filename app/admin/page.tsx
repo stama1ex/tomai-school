@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import {
+  FileStack,
   History,
   Inbox,
   MessageSquareWarning,
@@ -19,6 +20,7 @@ import { AdminButton } from '@/components/shared/admin-button';
 
 const dashboardLinks = [
   { href: '/admin/settings', label: 'Настройки сайта', icon: Settings },
+  { href: '/admin/pages', label: 'Дополнительные страницы', icon: FileStack },
   { href: '/admin/appeals', label: 'Обращения граждан', icon: Inbox },
   {
     href: '/admin/concern-reports',

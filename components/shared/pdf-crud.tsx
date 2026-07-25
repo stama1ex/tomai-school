@@ -24,9 +24,10 @@ interface PdfDocument {
 interface Props {
   apiPath: string;
   title?: string;
+  extraFields?: Record<string, string>;
 }
 
-export const PdfCrud: React.FC<Props> = ({ apiPath, title }) => {
+export const PdfCrud: React.FC<Props> = ({ apiPath, title, extraFields }) => {
   const isAdmin = useAdminStore((s) => s.isAdmin);
   const { data, isLoading, mutate } = useSWR<RawDoc[]>(apiPath);
 
@@ -43,6 +44,7 @@ export const PdfCrud: React.FC<Props> = ({ apiPath, title }) => {
     setIsPopoverOpen: (open: boolean) => void
   ) => {
     const newDoc = {
+      ...extraFields,
       title: data.inputPrimary.trim(),
       pdf_url: data.inputSecondary.trim(),
     };

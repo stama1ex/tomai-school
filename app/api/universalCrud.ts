@@ -19,20 +19,22 @@ const ALLOWED_TABLES = new Set([
   'reports',
   'staffing',
   'announcements',
+  'custom_pages',
+  'custom_page_documents',
 ]);
 
-export const createCrudHandlers = (tableName: string) => {
+export const createCrudHandlers = (tableName: string, filterColumn = 'type') => {
   if (!ALLOWED_TABLES.has(tableName)) {
     throw new Error(`Unknown table passed to createCrudHandlers: ${tableName}`);
   }
 
   const extractData = (result: any) => result.rows;
 
-  // ✅ GET: сортировка по order, с поддержкой ?type= для фильтра (публичный доступ на чтение)
+  // ✅ GET: сортировка по order, с поддержкой ?<filterColumn>= для фильтра (публичный доступ на чтение)
   const GET = async (req: NextRequest) => {
     const url = new URL(req.url);
-    const type = url.searchParams.get('type');
-    const whereClause = type ? ` WHERE "type" = $1` : '';
+    const type = url.searchParams.get(filterColumn);
+    const whereClause = type ? ` WHERE "${filterColumn}" = $1` : '';
     const params = type ? [type] : [];
 
     try {

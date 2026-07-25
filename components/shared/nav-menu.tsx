@@ -15,16 +15,26 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
+import { useAdminStore } from '@/store/admin';
 
 interface ExamYearRow {
   id: string;
   year: string;
 }
 
+interface CustomPageRow {
+  id: string;
+  slug: string;
+  title: string;
+}
+
 export function NavigationMenuDemo() {
   const pathname = usePathname();
   const { data } = useSWR<ExamYearRow[]>('/api/exam-year');
   const examYear = data?.[0]?.year ?? '2025';
+  const isAdmin = useAdminStore((s) => s.isAdmin);
+  const { data: customPages } = useSWR<CustomPageRow[]>('/api/custom-pages');
+  const pages = customPages ?? [];
 
   return (
     <NavigationMenu viewport={false}>
@@ -302,6 +312,55 @@ export function NavigationMenuDemo() {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
+
+        {/* Ещё */}
+        {(pages.length > 0 || isAdmin) && (
+          <NavigationMenuItem>
+            <NavigationMenuTrigger
+              className={cn(
+                'dark:bg-transparent',
+                pages.some((p) => pathname === `/more/${p.slug}`) &&
+                  'font-bold',
+              )}
+            >
+              Ещё
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[220px] gap-4">
+                <li>
+                  {pages.map((page) => (
+                    <NavigationMenuLink key={page.id} asChild>
+                      <Link
+                        href={`/more/${page.slug}`}
+                        className={cn(
+                          pathname === `/more/${page.slug}` &&
+                            'font-bold bg-muted',
+                        )}
+                      >
+                        {page.title}
+                      </Link>
+                    </NavigationMenuLink>
+                  ))}
+                  {pages.length === 0 && (
+                    <p className="p-2 text-sm text-muted-foreground">
+                      Страниц пока нет
+                    </p>
+                  )}
+                  {isAdmin && (
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href="/admin/pages"
+                        className="text-primary font-medium"
+                      >
+                        + Управление страницами
+                      </Link>
+                    </NavigationMenuLink>
+                  )}
+                </li>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        )}
 
         {/* Контакты */}
         <NavigationMenuItem>

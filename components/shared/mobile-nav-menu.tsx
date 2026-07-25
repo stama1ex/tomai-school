@@ -4,6 +4,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import useSWR from 'swr';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,9 +16,19 @@ import {
 import { Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DialogTitle } from '@radix-ui/react-dialog';
+import { useAdminStore } from '@/store/admin';
+
+interface CustomPageRow {
+  id: string;
+  slug: string;
+  title: string;
+}
 
 export function MobileNavMenu() {
   const pathname = usePathname();
+  const isAdmin = useAdminStore((s) => s.isAdmin);
+  const { data: customPages } = useSWR<CustomPageRow[]>('/api/custom-pages');
+  const pages = customPages ?? [];
 
   return (
     <Sheet>
@@ -306,6 +317,53 @@ export function MobileNavMenu() {
               </ul>
             </AccordionContent>
           </AccordionItem>
+
+          {/* Ещё */}
+          {(pages.length > 0 || isAdmin) && (
+            <AccordionItem value="more" className="px-4">
+              <AccordionTrigger
+                className={cn(
+                  pages.some((p) => pathname === `/more/${p.slug}`) &&
+                    'font-bold',
+                )}
+              >
+                Ещё
+              </AccordionTrigger>
+              <AccordionContent>
+                <ul className="grid gap-4">
+                  {pages.map((page) => (
+                    <li key={page.id}>
+                      <Link
+                        href={`/more/${page.slug}`}
+                        className={cn(
+                          'block p-2 hover:bg-muted rounded',
+                          pathname === `/more/${page.slug}` &&
+                            'font-bold bg-muted',
+                        )}
+                      >
+                        {page.title}
+                      </Link>
+                    </li>
+                  ))}
+                  {pages.length === 0 && (
+                    <li className="px-2 text-sm text-muted-foreground">
+                      Страниц пока нет
+                    </li>
+                  )}
+                  {isAdmin && (
+                    <li>
+                      <Link
+                        href="/admin/pages"
+                        className="block p-2 hover:bg-muted rounded text-primary font-medium"
+                      >
+                        + Управление страницами
+                      </Link>
+                    </li>
+                  )}
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+          )}
 
           {/* Контакты */}
           <Link
