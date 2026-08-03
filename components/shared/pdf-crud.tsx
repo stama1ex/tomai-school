@@ -8,6 +8,7 @@ import { useAdminStore } from '@/store/admin';
 import { Title } from '@/components/shared/title';
 import { Container } from '@/components/shared/container';
 import { Plus } from 'lucide-react';
+import { normalizeDriveUrl } from '@/lib/utils';
 
 interface RawDoc {
   id: string;
@@ -46,7 +47,7 @@ export const PdfCrud: React.FC<Props> = ({ apiPath, title, extraFields }) => {
     const newDoc = {
       ...extraFields,
       title: data.inputPrimary.trim(),
-      pdf_url: data.inputSecondary.trim(),
+      pdf_url: normalizeDriveUrl(data.inputSecondary.trim()),
     };
 
     if (!newDoc.title || !newDoc.pdf_url) {
@@ -95,7 +96,7 @@ export const PdfCrud: React.FC<Props> = ({ apiPath, title, extraFields }) => {
   ) => {
     const updatedData = {
       title: data.title.trim(),
-      pdf_url: data.pdfUrl.trim(),
+      pdf_url: normalizeDriveUrl(data.pdfUrl.trim()),
     };
 
     if (!updatedData.title || !updatedData.pdf_url) {
@@ -148,39 +149,7 @@ export const PdfCrud: React.FC<Props> = ({ apiPath, title, extraFields }) => {
       revalidate: false,
     });
 
-    toast.success(`Документ "${docTitle}" удален`, {
-      action: {
-        label: 'Отменить',
-        onClick: async () => {
-          try {
-            const res = await fetch(apiPath, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(deleted),
-            });
-            if (!res.ok) {
-              const errorData = await res.json().catch(() => ({}));
-              throw new Error(
-                errorData.details ||
-                  errorData.error ||
-                  'Не удалось восстановить'
-              );
-            }
-            mutate((current) => [...(current ?? []), deleted], {
-              revalidate: false,
-            });
-            toast.success('Удаление отменено');
-          } catch (e: unknown) {
-            const error =
-              e instanceof Error ? e : new Error('Неизвестная ошибка');
-            console.error('Ошибка восстановления:', error);
-            toast.error(
-              `Ошибка при восстановлении документа: ${error.message}`
-            );
-          }
-        },
-      },
-    });
+    toast.success(`Документ "${docTitle}" удален`);
 
     try {
       const res = await fetch(apiPath, {

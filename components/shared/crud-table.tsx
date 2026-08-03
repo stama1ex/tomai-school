@@ -141,27 +141,7 @@ export const CrudTable: React.FC<CrudTableProps> = ({
       revalidate: false,
     });
 
-    toast.success(`Удалено "${name}"`, {
-      action: {
-        label: 'Отменить',
-        onClick: async () => {
-          mutate((current) => [...(current ?? []), deleted], {
-            revalidate: false,
-          });
-          try {
-            await fetch(apiPath, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(deleted),
-            });
-            toast.success('Удаление отменено');
-          } catch (e) {
-            toast.error('Ошибка при восстановлении');
-            console.error(e);
-          }
-        },
-      },
-    });
+    toast.success(`Удалено "${name}"`);
 
     try {
       const res = await fetch(apiPath, {
