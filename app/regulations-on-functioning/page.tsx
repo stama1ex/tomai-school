@@ -1,8 +1,31 @@
+import fs from 'fs';
+import path from 'path';
+import { FileText, Image as ImageIcon } from 'lucide-react';
 import { Banner } from '@/components/shared/banner';
 import { Title } from '@/components/shared/title';
 import { Container } from '@/components/shared/container'; // Assuming the Container component is in this path
 
+const PDF_FILE = 'ПОЛОЖЕНИЕ_об_организации_и_функционировани_уч_зав.pdf';
+const PDF_URL = `/${PDF_FILE}`;
+
+const TITLE_PAGE_FILE =
+  'Титульный_Положение_об_организ_и_функционир_учебного_завед_2026.tif';
+const TITLE_PAGE_URL = `/${TITLE_PAGE_FILE}`;
+
+function getFileSizeMb(fileName: string): string | null {
+  try {
+    const filePath = path.join(process.cwd(), 'public', fileName);
+    const { size } = fs.statSync(filePath);
+    return (size / (1024 * 1024)).toFixed(1);
+  } catch {
+    return null;
+  }
+}
+
 export default function RegulationsOnFunctioning() {
+  const pdfSizeMb = getFileSizeMb(PDF_FILE);
+  const titlePageSizeMb = getFileSizeMb(TITLE_PAGE_FILE);
+
   return (
     <>
       <Banner
@@ -17,6 +40,47 @@ export default function RegulationsOnFunctioning() {
           className="dark:text-white font-bold text-center mb-6"
         />
         <hr className="mb-6" />
+
+        <div className="mb-8 flex flex-wrap justify-center gap-4">
+          <a
+            href={PDF_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 rounded-lg border bg-card p-4 hover:bg-accent transition-colors w-fit max-w-full"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+              <FileText className="h-5 w-5" />
+            </span>
+            <span className="flex flex-col min-w-0">
+              <span className="font-medium dark:text-white">
+                Положение о функционировании гимназии
+              </span>
+              <span className="text-sm text-muted-foreground">
+                PDF{pdfSizeMb ? ` · ${pdfSizeMb} МБ` : ''} — открыть
+              </span>
+            </span>
+          </a>
+
+          <a
+            href={TITLE_PAGE_URL}
+            download
+            className="flex items-center gap-3 rounded-lg border bg-card p-4 hover:bg-accent transition-colors w-fit max-w-full"
+          >
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+              <ImageIcon className="h-5 w-5" />
+            </span>
+            <span className="flex flex-col min-w-0">
+              <span className="font-medium dark:text-white">
+                Титульный лист Положения
+              </span>
+              <span className="text-sm text-muted-foreground">
+                TIFF{titlePageSizeMb ? ` · ${titlePageSizeMb} МБ` : ''} —
+                скачать
+              </span>
+            </span>
+          </a>
+        </div>
+
         <div className="prose max-w-none dark:text-white/90">
           <p className="mb-4">
             Положение об организации и функционировании гимназии с. Томай
