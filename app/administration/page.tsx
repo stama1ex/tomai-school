@@ -4,11 +4,20 @@ import { Container } from '@/components/shared/container';
 import { Title } from '@/components/shared/title';
 import { getSiteSettings, toTelHref } from '@/lib/settings';
 
+const directorInfo = {
+  subject: 'Учитель румынского языка и литературы',
+  degree: 'II',
+  experience: '23 года',
+};
+
 const deputies = [
   {
     name: 'Констандогло Иванна Владимировна',
     position:
       'Исполняющий обязанности заместителя директора по учебно-воспитательной работе',
+    subject: 'Библиотекарь',
+    degree: 'I',
+    experience: '40 лет',
     duties: [
       'организация и координация учебно-воспитательного процесса;',
       'контроль качества образования и выполнения учебных программ;',
@@ -23,6 +32,9 @@ const deputies = [
     name: 'Чеботарь Галина Семёновна',
     position:
       'Исполняющий обязанности заместителя директора по воспитательной работе',
+    subject: 'Учитель гагаузского языка и литературы',
+    degree: 'II',
+    experience: '6 лет',
     duties: [
       'организация и координация воспитательной работы в гимназии;',
       'разработка и реализация плана воспитательной деятельности;',
@@ -75,6 +87,13 @@ export default async function AdministrationPage() {
               <p className="text-sm text-muted-foreground">
                 {s.directorPosition}
               </p>
+              <p className="text-sm text-muted-foreground">
+                {directorInfo.subject}
+              </p>
+              <div className="flex flex-wrap gap-x-4 text-sm text-muted-foreground mt-1">
+                <span>Дидактическая степень: {directorInfo.degree}</span>
+                <span>Педагогический стаж: {directorInfo.experience}</span>
+              </div>
             </div>
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">
               {s.directorOfficeHours && (
@@ -132,6 +151,21 @@ export default async function AdministrationPage() {
                     <p className="text-sm text-muted-foreground">
                       {deputy.position}
                     </p>
+                    {deputy.subject && (
+                      <p className="text-sm text-muted-foreground">
+                        {deputy.subject}
+                      </p>
+                    )}
+                    {(deputy.degree || deputy.experience) && (
+                      <div className="flex flex-wrap gap-x-4 text-sm text-muted-foreground mt-1">
+                        {deputy.degree && (
+                          <span>Дидактическая степень: {deputy.degree}</span>
+                        )}
+                        {deputy.experience && (
+                          <span>Педагогический стаж: {deputy.experience}</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div>
